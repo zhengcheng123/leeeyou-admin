@@ -1,0 +1,258 @@
+// 一行二列
+.dialog-common-style {
+  .el-dialog {
+    display: flex;
+    flex-direction: column;
+    margin: 0 !important;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    max-height: calc(100% - 30px);
+    max-width: calc(100% - 30px);
+    //以上为水平垂直居中
+    .el-dialog__header {
+      margin: 8px 0;
+      border-left: 5px solid rgb(193, 23, 45);
+      background-color: rgba(248, 248, 248, 1);
+      padding: 8px 25px;
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      .el-dialog__title {
+        color: #333333;
+        font-weight: bolder;
+      }
+      .el-dialog__headerbtn {
+        position: inherit;
+        .el-dialog__close {
+          color: #666666;
+        }
+      }
+    }
+    .el-dialog__body {
+      max-height: 550px;
+      overflow: auto;
+      .el-form {
+        .el-form-item {
+          margin-bottom: 20px !important;
+          .el-form-item__label {
+            padding-right: 15px;
+          }
+          .el-input {
+            width: 200px !important;
+          }
+          .el-input__inner {
+            line-height: 36px;
+            height: 36px;
+            // width:200px;
+          }
+          .el-textarea__inner {
+            width: 580px;
+            font-family: "microsoft";
+          }
+        }
+        // 多选表格
+        .el-table {
+          height: 250px;
+          overflow: auto;
+          th .cell {
+            font-size: 14px !important;
+          }
+        }
+      }
+    }
+    .el-dialog__footer {
+      border-top: 1px solid #eeeeee;
+      padding: 20px 40px;
+      .dialog-footer {
+        text-align: right;
+        button {
+          border-radius: 3px;
+          font-size: 14px;
+          padding: 10px 22px;
+          font-family: "Source Han Sans CN";
+          font-weight: bold;
+        }
+      }
+    }
+  }
+}
+
+// 一行三列
+.dialog-common-style2 {
+  .el-dialog {
+    .el-dialog__header {
+      border-left: 5px solid rgb(193, 23, 45);
+      background-color: rgba(248, 248, 248, 1);
+      padding: 12px 25px;
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      .el-dialog__title {
+        color: #333333;
+        font-weight: bolder;
+      }
+      .el-dialog__headerbtn {
+        position: inherit;
+        .el-dialog__close {
+          color: #666666;
+        }
+      }
+    }
+    .el-dialog__body {
+      max-height: 550px;
+      overflow: auto;
+      .el-form {
+        .el-form-item {
+          margin-bottom: 15px !important;
+          .el-form-item__label {
+            padding-right: 15px;
+          }
+          // .el-input {
+          // width:200px !important;
+          // }
+          .el-input__inner {
+            line-height: 36px;
+            height: 36px;
+            // width:200px;
+          }
+          .el-textarea__inner {
+            width: 580px;
+            font-family: "microsoft";
+          }
+        }
+        .jcbx {
+          .el-textarea__inner {
+            width: 650px;
+            font-family: "microsoft";
+          }
+        }
+        // 多选表格
+        .el-table {
+          height: 250px;
+          overflow: auto;
+          th .cell {
+            font-size: 14px !important;
+          }
+        }
+      }
+    }
+    .el-dialog__footer {
+      border-top: 1px solid #eeeeee;
+      padding: 20px 40px;
+      .dialog-footer {
+        text-align: right;
+        button {
+          border-radius: 3px;
+          font-size: 14px;
+          padding: 10px 24px;
+          font-family: "Source Han Sans CN";
+          font-weight: bold;
+          // background: #099E79;
+          // border: 1px solid #099E79;
+          // color: #fff;
+        }
+        // button:last-child {
+        //     background: #888888;
+        //     border: 1px solid #888888;
+        //     color: #fff;
+        //     &:hover {
+        //         border: 1px solid #888888;
+        //     }
+        // }
+      }
+    }
+  }
+}
+
+// 弹窗放大专用样式
+
+.dialog-Width-style {
+  .el-dialog {
+    display: flex;
+    flex-direction: column;
+    margin: 0 !important;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    max-height: calc(100% - 30px);
+    max-width: calc(100% - 30px);
+    //以上为水平垂直居中
+    .el-dialog__header {
+      background-color: rgba(248, 248, 248, 1);
+      padding: 12px 25px;
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      .el-dialog__title {
+        color: #333333;
+        font-weight: bolder;
+      }
+      .el-dialog__headerbtn {
+        position: inherit;
+        .el-dialog__close {
+          color: #666666;
+        }
+      }
+    }
+    .el-dialog__body {
+      height: 550px;
+      overflow: auto;
+      .el-form {
+        .el-form-item {
+          margin-bottom: 20px !important;
+          .el-form-item__label {
+            padding-right: 15px;
+          }
+          .el-input {
+            width: 200px !important;
+          }
+          .el-input__inner {
+            line-height: 36px;
+            height: 36px;
+            // width:200px;
+          }
+          .el-textarea__inner {
+            width: 580px;
+            font-family: "microsoft";
+          }
+        }
+        // 多选表格
+        .el-table {
+          // height: 250px;
+          overflow: auto;
+          th .cell {
+            font-size: 14px !important;
+          }
+        }
+      }
+    }
+    .el-dialog__footer {
+      border-top: 1px solid #eeeeee;
+      padding: 20px 40px;
+      .dialog-footer {
+        text-align: right;
+        button {
+          border-radius: 3px;
+          font-size: 14px;
+          padding: 10px 22px;
+          font-family: "Source Han Sans CN";
+          font-weight: bold;
+          // background: #099E79;
+          // border: 1px solid #099E79;
+          // color: #fff;
+        }
+        // button:last-child {
+        //     background: #888888;
+        //     border: 1px solid #888888;
+        //     color: #fff;
+        //     &:hover {
+        //         border: 1px solid #888;
+        //     }
+        // }
+      }
+    }
+  }
+}

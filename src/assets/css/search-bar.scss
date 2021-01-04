@@ -1,0 +1,120 @@
+/**
+ * 查询-搜索条 公共样式
+ */
+
+.search-bar {
+  display: flex;
+  flex-flow: row wrap;
+  align-items: center;
+  background-color: #ffffff;
+  padding: 45px 35px;
+  margin-bottom: -20px;
+  min-height: 36px;
+  > div {
+    &.search-item {
+      flex: 0 0 20%;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      margin: 0 20px 20px 0;
+      .label {
+        font-size: 14px;
+        color: #333333;
+        font-weight: 400;
+        white-space: nowrap;
+      }
+      .el-input {
+        width: 200px;
+        .el-input__inner {
+          height: 38px !important;
+          line-height: 38px !important;
+        }
+      }
+      .el-date-editor {
+        width: 200px;
+      }
+    }
+    &.search-item2 {
+      flex: 0 0 20%;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      margin: 0 20px 20px 0;
+      .label {
+        font-size: 14px;
+        color: #333333;
+        white-space: nowrap;
+        font-weight: 400;
+        font-family: "Source Han Sans CN";
+      }
+      .el-input {
+        width: 200px;
+        .el-input__inner {
+          // height: 38px !important;
+          line-height: 38px !important;
+        }
+      }
+      .el-date-editor {
+        width: 200px;
+      }
+    }
+    &.search-btn {
+      margin-right: 0;
+      flex: 1;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+      .el-button {
+        width: 78px;
+        height: 36px;
+        font-size: 15px !important;
+        margin: 0 15px 20px 0 !important;
+      }
+      > div {
+        flex: 1;
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-end;
+        .el-button {
+          &:last-child {
+            margin-right: 0 !important;
+          }
+        }
+      }
+    }
+    &.search-btnT {
+      margin-right: 0;
+      flex: 1;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      // button:nth-child(2) {
+      //     border-color: #099E79;
+      //     background: #099E79
+      // }
+      // button:nth-child(3) {
+      //     border-color: #888888;
+      //     background: #888888;
+      // }
+      .el-button {
+        font-size: 14px !important;
+        // padding: 10px 24px !important;
+        width: 100px;
+        height: 36px;
+        margin: 0 15px 20px 0 !important;
+      }
+      > div {
+        flex: 1;
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-end;
+        .el-button {
+          &:last-child {
+            margin-right: 0 !important;
+          }
+        }
+      }
+    }
+  }
+}

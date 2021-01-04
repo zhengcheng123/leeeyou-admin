@@ -1,0 +1,45 @@
+/**
+ * el-pagination style
+ * 分页标签需添加属性：background
+ */
+
+.el-pagination {
+    text-align: center !important;
+}
+
+.el-pagination.is-background {
+    .el-pagination__sizes {
+        .el-select {
+            .el-input {
+                .el-input__inner:hover,
+                .el-input__inner:focus {
+                    border-color: #C2172D;
+                }
+                &.is-focus {
+                    .el-input__inner {
+                        border-color: #C2172D;
+                    }
+                }
+            }
+        }
+    }
+    .el-pager {
+        .number:hover {
+            color: #C2172D;
+        }
+        .number.active {
+            color: #C2172D !important;
+            background-color: #ffffff !important;
+            &:hover {
+                color: #ffffff;
+            }
+        }
+    }
+    .el-pagination__jump {
+        .el-input {
+            .el-input__inner:focus {
+                border-color: #C2172D;
+            }
+        }
+    }
+}

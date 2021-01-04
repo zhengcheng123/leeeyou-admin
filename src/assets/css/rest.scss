@@ -1,0 +1,287 @@
+.clearFix:after {
+  content: "";
+  display: block;
+  clear: both;
+}
+
+@mixin flex {
+  display: flex;
+  display: -moz-box; /* Firefox */
+  display: -ms-flexbox; /* IE10 */
+  display: -webkit-box; /* Safari */
+  display: -webkit-flex; /* Chrome, WebKit */
+}
+
+@mixin flex-items {
+  @include flex;
+  align-items: center;
+}
+
+@mixin flex-justify {
+  @include flex;
+  justify-content: center;
+}
+
+@mixin items-justify {
+  @include flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@mixin background_img($img) {
+  background: url($img) no-repeat;
+  -webkit-background-size: 100% 100%;
+  background-size: 100% 100%;
+}
+
+@mixin border_radius($p) {
+  -webkit-border-radius: $p;
+  -moz-border-radius: $p;
+  border-radius: $p;
+}
+
+@mixin box_shadow($n, $p) {
+  -webkit-box-shadow: 0 1px $p 0 $n;
+  -moz-box-shadow: 0 1px $p 0 $n;
+  box-shadow: 0 1px $p 0 $n;
+}
+
+@mixin transition {
+  -webkit-transition: all 0.4s;
+  -moz-transition: all 0.4s;
+  -ms-transition: all 0.4s;
+  -o-transition: all 0.4s;
+  transition: all 0.4s;
+}
+
+@mixin bgPic($img) {
+  background: url($img) no-repeat center center;
+  background-size: 100% 100%;
+}
+
+@mixin line-clamp($n) {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: $n;
+}
+
+/* js提示弹窗修改 yhj*/
+.el-message-box__wrapper {
+  .el-message-box__btns > .el-button:nth-child(1) {
+    background: #888888;
+    color: #fff;
+    border: 1px solid #888888;
+  }
+}
+//弹窗样式（修改密码,内河智库使用）yhj
+.proupClass {
+  .el-dialog__header {
+    text-align: center;
+    background: #f8f8f8;
+    padding: 8px 0;
+    height: 40px;
+    border-left: 5px solid rgb(193, 23, 45);
+  }
+
+  .el-dialog__headerbtn .el-dialog__close {
+    display: none;
+  }
+
+  .el-dialog__header span {
+    color: #333;
+    font-weight: 600;
+  }
+
+  .el-dialog__body {
+    background: #fff;
+    max-height: 550px;
+    overflow: auto;
+  }
+
+  .el-dialog__footer {
+    text-align: center;
+    border-top: 1px solid #eeeeee;
+    padding: 20px 40px;
+    .dialog-footer {
+      text-align: right;
+      button {
+        border-radius: 3px;
+        font-size: 14px;
+        padding: 10px 22px;
+        font-family: "Source Han Sans CN";
+        font-weight: bold;
+      }
+    }
+  }
+
+  .el-button + .el-button {
+    margin-left: 30px;
+  }
+}
+//szs样式--input
+.inputBoxSzs {
+  .el-form-item__content {
+    float: left;
+  }
+  .el-form-item__label {
+    margin-right: 30px;
+    font-size: 18px;
+    color: #333;
+    width: 100px;
+    text-align: right;
+  }
+  .el-form-item__content {
+    float: left;
+  }
+  .el-input__inner {
+    color: #333;
+  }
+  .el-button {
+    background-color: #ad3042 !important;
+  }
+}
+//单政硕分页
+.pagingSzs {
+  text-align: center;
+  margin-top: 15px;
+}
+//szs样式--table
+.tableBoxSzs {
+  .el-table__row:last-child {
+    td {
+      border-bottom: 0px;
+    }
+  }
+
+  .el-table--border::after {
+    display: none;
+  }
+}
+.nameSzs {
+  background-color: #eee;
+  color: #333;
+  font-size: 20px;
+  font-weight: 700;
+  // width: 100px;
+  height: 40px;
+  line-height: 40px;
+  text-align: center;
+}
+.titleSzs {
+  width: 100%;
+  height: 30px;
+  margin-bottom: 10px;
+  // margin-top: 20px;
+  span {
+    height: 20px;
+    line-height: 20px;
+    display: inline-block;
+    font-size: 18px;
+    color: #333;
+    padding-left: 15px;
+    border-left: 4px solid #ad3042;
+    font-weight: 700;
+  }
+}
+.inputboxSzs {
+  background: #fff;
+  padding: 30px;
+  // margin-right: 20px;
+  // border-radius: 5px;
+  box-shadow: 0px 1px 21px 0px rgba(51, 51, 51, 0.08);
+  // margin-top: -14px;
+  margin-bottom: 10px;
+  .inputBoxSzs {
+    .el-input__inner {
+      width: 227px;
+    }
+    .el-pagination .btn-next,
+    .el-pagination .btn-prev {
+      color: #c0c4cc;
+    }
+    .el-pagination button:hover {
+      color: #409eff;
+    }
+    .el-pagination {
+      color: #c0c4cc;
+    }
+    .el-loading-spinner .el-loading-text {
+      color: #ad3042;
+    }
+    .el-loading-spinner i {
+      color: #ad3042;
+    }
+  }
+  .submit {
+    background-color: #b13446;
+    margin-left: 286px;
+  }
+}
+.tableSzs {
+  background: #fff;
+  // border-radius: 5px;
+  box-shadow: 0px 1px 21px 0px rgba(51, 51, 51, 0.08);
+  box-sizing: border-box;
+  padding: 30px;
+  // margin-right: 20px;
+  .newIncrease {
+    background-color: #c1172d;
+    color: #fff;
+    height: 38px;
+    width: 120px;
+    text-align: center;
+    margin-bottom: 14px;
+  }
+  .launchQuestion {
+    margin-bottom: 30px;
+  }
+  .tableBoxSzs {
+    .el-table {
+      margin-bottom: 40px;
+    }
+  }
+}
+.searchboxSzs {
+  min-height: 170px;
+  background: #fff;
+  padding-top: 20px;
+  padding-left: 30px;
+  // border-radius: 5px;
+  box-shadow: 0px 1px 21px 0px rgba(51, 51, 51, 0.08);
+}
+.formInputSzs {
+  margin-bottom: 15px;
+  .el-row {
+    width: 100%;
+    .el-col {
+      .el-form-item {
+        width: 100%;
+        .el-form-item__label {
+          float: left;
+          width: 95px;
+          font-size: 16px;
+          margin-right: 15px;
+          text-align: center;
+        }
+        .el-form-item__content {
+          float: left;
+          width: 50%;
+        }
+        .el-select {
+          width: 100%;
+          .el-input {
+            width: 100%;
+          }
+        }
+      }
+    }
+  }
+  .submit {
+    background-color: #c1172d;
+    margin-left: 307px;
+    margin-bottom: 20px;
+    border: none;
+  }
+}
