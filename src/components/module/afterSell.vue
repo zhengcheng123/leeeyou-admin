@@ -57,7 +57,7 @@
             <el-table-column type="selection"
                              width="55"></el-table-column>
             <el-table-column prop="code"
-                             min-width="180"
+                             min-width="190"
                              label="退款编码"
                              align="center"></el-table-column>
             <el-table-column prop="orderStoreCode"
@@ -103,7 +103,7 @@
             </el-table-column>
             <el-table-column prop="reason"
                              label="退款原因"
-                             min-width="180"
+                             min-width="190"
                              align="center">
               <template slot-scope="props">
                 <span v-if="props.row.reason === '0'">多拍/错拍/不喜欢/不想要</span>
@@ -122,6 +122,20 @@
                              label="物流单号"
                              min-width="150"
                              align="center"></el-table-column>
+            <el-table-column label="凭证图片"
+                             min-width="260"
+                             align="center">
+              <template scope="props">
+                <div style="display: flex; flex-flow: row wrap;">
+                  <img v-for="i in 5"
+                       :key="i"
+                       v-show="props.row[`pic${i}`]"
+                       :src="$GETIMGHOST + props.row[`pic${i}`]"
+                       style=" margin: 0 5px 5px 0;max-width: 100%; max-height: 80px; border: 1px solid #999999;padding: 3px;"
+                       @click="previewImg($GETIMGHOST + props.row[`pic${i}`])">
+                </div>
+              </template>
+            </el-table-column>
             <el-table-column prop="refundStat"
                              label="退款状态"
                              min-width="120"
@@ -136,21 +150,21 @@
               </template>
             </el-table-column>
             <el-table-column prop="createTime"
-                             min-width="180"
+                             min-width="190"
                              label="交易创建时间"
                              align="center">
               <template scope="props">
                 <span>{{renderTime(props.row.createTime)}}</span>
               </template>
             </el-table-column>
-            <!-- <el-table-column prop="checkTime" label="确认时间" min-width="180" align="center">
+            <!-- <el-table-column prop="checkTime" label="确认时间" min-width="190" align="center">
               <template scope="props">
                 <span>{{renderTime(props.row.checkTime)}}</span>
               </template>
             </el-table-column> -->
             <el-table-column prop="finishTime"
                              label="退款完成时间"
-                             min-width="180"
+                             min-width="190"
                              align="center">
               <template scope="props">
                 <span>{{renderTime(props.row.finishTime)}}</span>
@@ -190,6 +204,14 @@
       </div>
     </div>
 
+    <el-dialog title="预览"
+               width="500px"
+               :visible.sync="imgVisible">
+      <img :src="targetImg"
+           style="max-width: 100%;"
+           alt="">
+    </el-dialog>
+
     <!-- <afterDetail v-if="detail"></afterDetail> -->
   </div>
 </template>
@@ -224,6 +246,8 @@ export default {
           sortorder: 'desc',
         },
       },
+      targetImg: '',
+      imgVisible: false,
     }
   },
   computed: {
@@ -236,6 +260,10 @@ export default {
     this.getItems()
   },
   methods: {
+    previewImg(url) {
+      this.targetImg = url
+      this.imgVisible = true
+    },
     agreeRefund(afterSell) {
       // if(afterSell.refund_stat === 1){
       //   this.disabledAss = false;

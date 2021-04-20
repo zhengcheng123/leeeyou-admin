@@ -6,7 +6,7 @@
       <!-- <i class="iconfont icon-shopping icon-4x" aria-hidden="true"></i> -->
       <div class="login-boxsha">
         <div class="login-herder">welcome</div>
-        <h3>庆丰商城后台系统</h3>
+        <h3>乐有商城后台系统</h3>
         <el-form class="login-form"
                  :model="loginForm"
                  ref="loginForm"
@@ -180,7 +180,7 @@ export default {
   min-height: 500px !important;
 }
 .login-bg {
-  background: url('../../assets/bg.png');
+  background: url('../../assets/bg.jpeg');
   background-size: 100% 100%;
   width: 70%;
   height: 100%;

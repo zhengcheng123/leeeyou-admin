@@ -3,7 +3,8 @@
     <div class="crumbs">
       <el-breadcrumb separator="/">
         <el-breadcrumb-item>
-          <i class="fa fa-users" aria-hidden="true"></i>
+          <i class="fa fa-users"
+             aria-hidden="true"></i>
           交易管理
         </el-breadcrumb-item>
       </el-breadcrumb>
@@ -11,39 +12,45 @@
     <div class="content">
       <div class="goods-row">
         <div class="row">
-          <el-radio-group v-model="conditionForm.item.stat" @change="getItems">
+          <el-radio-group v-model="conditionForm.item.stat"
+                          @change="getItems">
             <el-radio-button :label="''">全部</el-radio-button>
-            <el-radio-button v-for="item in states" :label="item.value">{{item.label}}</el-radio-button>
+            <el-radio-button v-for="item in states"
+                             :label="item.value">{{item.label}}</el-radio-button>
           </el-radio-group>
         </div>
         <div class="row">
           <el-form :inline="true">
             <el-form-item label="创建时间">
-              <el-date-picker
-                class="date-picker"
-                v-model="conditionForm.item.initTime"
-                type="daterange"
-                range-separator="至"
-                start-placeholder="开始"
-                end-placeholder="结束"
-              ></el-date-picker>
+              <el-date-picker class="date-picker"
+                              v-model="conditionForm.item.initTime"
+                              type="daterange"
+                              range-separator="至"
+                              start-placeholder="开始"
+                              end-placeholder="结束"></el-date-picker>
             </el-form-item>
-            <el-form-item label="订单号" prop="code">
-              <el-input clearable v-model.trim="conditionForm.item.code"></el-input>
+            <el-form-item label="订单号"
+                          prop="code">
+              <el-input clearable
+                        v-model.trim="conditionForm.item.code"></el-input>
             </el-form-item>
-            <el-form-item label="状态" prop="stat">
-              <el-select clearable v-model="conditionForm.item.stat">
-                <el-option
-                  v-for="item in states"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
-                ></el-option>
+            <el-form-item label="状态"
+                          prop="stat">
+              <el-select clearable
+                         v-model="conditionForm.item.stat">
+                <el-option v-for="item in states"
+                           :key="item.value"
+                           :label="item.label"
+                           :value="item.value"></el-option>
               </el-select>
             </el-form-item>
             <el-form-item>
-              <el-button type="primary" class="f-left adds-btn" @click="searchItem">搜索</el-button>
-              <el-button type="primary" class="f-left adds-btn" @click="exportList()">导出</el-button>
+              <el-button type="primary"
+                         class="f-left adds-btn"
+                         @click="searchItem">搜索</el-button>
+              <el-button type="primary"
+                         class="f-left adds-btn"
+                         @click="exportList()">导出</el-button>
             </el-form-item>
           </el-form>
           <!--<el-button icon="plus" size="small" @click="addItem" class="f-left">新增</el-button>-->
@@ -52,112 +59,149 @@
           <!--</el-button>-->
         </div>
       </div>
-      <section class="section" style="background:#fff">
-        <el-table
-          :data="currentItems"
-          @selection-change="selectionChange"
-          border
-          style="width: 100%"
-          :header-cell-style="{background:'#E8EAEE',height:'48px',}"
-          @sort-change="sortItems"
-          :max-height="maxTableHeight"
-          class="trade-table"
-        >
-          <el-table-column type="selection" width="55" align="center"></el-table-column>
-          <el-table-column prop="code" min-width="180" label="订单号" align="center"></el-table-column>
-          <el-table-column prop="payment" min-width="120" label="实际付款" sortable align="center">
+      <section class="section"
+               style="background:#fff">
+        <el-table :data="currentItems"
+                  @selection-change="selectionChange"
+                  border
+                  style="width: 100%"
+                  :header-cell-style="{background:'#E8EAEE',height:'48px',}"
+                  @sort-change="sortItems"
+                  :max-height="maxTableHeight"
+                  class="trade-table">
+          <el-table-column type="selection"
+                           width="55"
+                           align="center"></el-table-column>
+          <el-table-column prop="code"
+                           min-width="190"
+                           label="订单号"
+                           align="center"></el-table-column>
+          <el-table-column prop="payment"
+                           min-width="120"
+                           label="实际付款"
+                           sortable
+                           align="center">
             <template slot-scope="props">{{pennyToDollar(props.row.payment)}}</template>
           </el-table-column>
           <!-- <el-table-column prop="paycode" label="支付交易编号" align="center"></el-table-column> -->
-          <el-table-column prop="buyerName" min-width="120" label="客户" align="center"></el-table-column>
+          <el-table-column prop="buyerName"
+                           min-width="120"
+                           label="客户"
+                           align="center"></el-table-column>
           <!--<el-table-column prop="shopping_addr" label="收货地址id" sortable></el-table-column>-->
           <!--<el-table-column prop="stat" label="交易状态" sortable align="center"></el-table-column>-->
-          <el-table-column prop="comment" min-width="120" label="买家备注" align="center"></el-table-column>
-          <el-table-column label="配送方式" min-width="120" align="center">
+          <el-table-column prop="comment"
+                           min-width="120"
+                           label="买家备注"
+                           align="center"></el-table-column>
+          <el-table-column label="配送方式"
+                           min-width="120"
+                           align="center">
             <template slot-scope="props">
               <span v-if="props.row.logisticsType === 1">快递</span>
               <span v-if="props.row.logisticsType === 2">自提</span>
               <span v-if="props.row.logisticsType === 3">无物流</span>
             </template>
           </el-table-column>
-          <el-table-column prop="freight" min-width="120" label="运费" sortable>
+          <el-table-column prop="freight"
+                           min-width="120"
+                           label="运费"
+                           sortable>
             <template slot-scope="props">{{pennyToDollar(props.row.freight)}}</template>
           </el-table-column>
-          <el-table-column prop="stat" min-width="120" label="状态" sortable align="center">
+          <el-table-column prop="stat"
+                           min-width="120"
+                           label="状态"
+                           sortable
+                           align="center">
             <template slot-scope="props">{{renderStateLabel(states, props.row.stat)}}</template>
           </el-table-column>
-          <el-table-column prop="createTime" min-width="180" label="创建时间" sortable align="center">
+          <el-table-column prop="createTime"
+                           min-width="190"
+                           label="创建时间"
+                           sortable
+                           align="center">
             <template slot-scope="props">{{renderTime(props.row.createTime)}}</template>
           </el-table-column>
-          <el-table-column prop="payTime" min-width="180" label="付款时间" sortable align="center">
+          <el-table-column prop="payTime"
+                           min-width="190"
+                           label="付款时间"
+                           sortable
+                           align="center">
             <template slot-scope="props">{{renderTime(props.row.payTime)}}</template>
           </el-table-column>
-          <el-table-column prop="sendTime" min-width="180" label="发货时间" sortable align="center">
+          <el-table-column prop="sendTime"
+                           min-width="190"
+                           label="发货时间"
+                           sortable
+                           align="center">
             <template slot-scope="props">{{renderTime(props.row.sendTime)}}</template>
           </el-table-column>
-          <el-table-column prop="finishTime" min-width="180" label="成交时间" sortable align="center">
+          <el-table-column prop="finishTime"
+                           min-width="190"
+                           label="成交时间"
+                           sortable
+                           align="center">
             <template slot-scope="props">{{renderTime(props.row.finishTime)}}</template>
           </el-table-column>
-          <el-table-column label="操作" min-width="180" align="center">
+          <el-table-column label="操作"
+                           min-width="190"
+                           align="center">
             <template scope="props">
               <div class="btn-group">
-                <el-button
-                  class="btn-delive"
-                  v-if="props.row.logisticsType===1"
-                  type="text"
-                  :disabled="props.row.stat!==2"
-                  @click="sendGoods(props.row)"
-                >发货</el-button>
-                <el-button
-                  class="btn-delive"
-                  v-if="props.row.logisticsType===2"
-                  type="text"
-                  :disabled="props.row.stat!==2"
-                  @click="writeOff(props.row)"
-                >核销</el-button>
-                <el-button class="btn-delive" type="text" @click="tradeDetail(props.row.id)">详情</el-button>
+                <el-button class="btn-delive"
+                           v-if="props.row.logisticsType===1"
+                           type="text"
+                           :disabled="props.row.stat!==2"
+                           @click="sendGoods(props.row)">发货</el-button>
+                <el-button class="btn-delive"
+                           v-if="props.row.logisticsType===2"
+                           type="text"
+                           :disabled="props.row.stat!==2"
+                           @click="writeOff(props.row)">核销</el-button>
+                <el-button class="btn-delive"
+                           type="text"
+                           @click="tradeDetail(props.row.id)">详情</el-button>
               </div>
             </template>
           </el-table-column>
         </el-table>
-        <el-pagination
-          class="pagination"
-          @size-change="pageSizeChange"
-          :page-sizes="[15,30,50,100]"
-          :page-size="conditionForm.page.pageSize"
-          :current-page="conditionForm.page.pageNum"
-          @current-change="pageNoChange"
-          layout="total, sizes,prev, pager, next, jumper"
-          :total="conditionForm.page.total"
-        ></el-pagination>
+        <el-pagination class="pagination"
+                       @size-change="pageSizeChange"
+                       :page-sizes="[15,30,50,100]"
+                       :page-size="conditionForm.page.pageSize"
+                       :current-page="conditionForm.page.pageNum"
+                       @current-change="pageNoChange"
+                       layout="total, sizes,prev, pager, next, jumper"
+                       :total="conditionForm.page.total"></el-pagination>
       </section>
 
       <!--item form-->
-      <el-dialog
-        title="发货"
-        :visible.sync="logisticsFormVisible"
-        custom-class="logistics-dialog"
-        @close="resetForm"
-      >
-        <el-form
-          :model="logisticsForm"
-          ref="logisticsForm"
-          label-width="90px"
-          class="account-form"
-          :rules="logisticsFormRules"
-        >
-         
-          <el-form-item label="运单号" prop="logisticsCode">
+      <el-dialog title="发货"
+                 :visible.sync="logisticsFormVisible"
+                 custom-class="logistics-dialog"
+                 @close="resetForm">
+        <el-form :model="logisticsForm"
+                 ref="logisticsForm"
+                 label-width="90px"
+                 class="account-form"
+                 :rules="logisticsFormRules">
+
+          <el-form-item label="运单号"
+                        prop="logisticsCode">
             <el-input v-model.trim="logisticsForm.logisticsCode"></el-input>
           </el-form-item>
           <!-- <el-form-item label="运费" prop="priceDollar">
             <el-input v-model.number="logisticsForm.priceDollar"></el-input>
           </el-form-item>-->
-          <el-form-item label="备注" prop="comment">
+          <el-form-item label="备注"
+                        prop="comment">
             <el-input v-model.trim="logisticsForm.comment"></el-input>
           </el-form-item>
           <div class="butn">
-            <el-button class="lg-btn sure-btn" :loading="saving" @click="saveLogistics">确认</el-button>
+            <el-button class="lg-btn sure-btn"
+                       :loading="saving"
+                       @click="saveLogistics">确认</el-button>
           </div>
         </el-form>
       </el-dialog>
@@ -165,41 +209,37 @@
   </div>
 </template>
 <script>
-import {
-  renderTime,
-  pennyToDollar,
-  renderStateLabel
-} from "../../assets/utils";
+import { renderTime, pennyToDollar, renderStateLabel } from '../../assets/utils'
 
 export default {
   data() {
     return {
-      ticeId: "",
-      typeTice: "",
+      ticeId: '',
+      typeTice: '',
       /* util methods */
       renderTime,
       pennyToDollar,
       renderStateLabel,
       states: [
-        { label: "待付款", value: 1 },
-        { label: "待发货", value: 2 },
-        { label: "待收货", value: 3 },
-        { label: "待评价", value: 4 },
-        { label: "已完成", value: 5 },
-        { label: "已关闭", value: 6 }
+        { label: '待付款', value: 1 },
+        { label: '待发货', value: 2 },
+        { label: '待收货', value: 3 },
+        { label: '待评价', value: 4 },
+        { label: '已完成', value: 5 },
+        { label: '已关闭', value: 6 },
       ],
       logisticsCompanies: [],
       logisticsForm: {
-        id: "",
-        logisticsCode: "",
+        id: '',
+        logisticsCode: '',
         priceDollar: 0,
         price: 0,
-        pic: "",
-        comment: "",
-        type: ""
+        pic: '',
+        comment: '',
+        type: '',
       },
       logisticsFormRules: {
-        logisticsCode: [{ required: true, message: "请输入运单号" }]
+        logisticsCode: [{ required: true, message: '请输入运单号' }],
         // priceDollar: [{ required: true, message: "请输入运费" }]
       },
       sendGoodsTradeId: -1,
@@ -208,7 +248,7 @@ export default {
       /* item form */
       itemForm: {
         id: -1,
-        freight: null
+        freight: null,
       },
       logisticsFormVisible: false,
       saving: false,
@@ -217,283 +257,280 @@ export default {
       selectedItems: [],
       conditionForm: {
         item: {
-          id: "",
-          code: "",
-          buyerId: "",
-          sellerId: "",
-          dealUserId: "",
-          saveMoney: "",
-          logisticeId: "",
-          freight: "",
-          payment: "",
-          paycode: "",
-          shoppingAddr: "",
+          id: '',
+          code: '',
+          buyerId: '',
+          sellerId: '',
+          dealUserId: '',
+          saveMoney: '',
+          logisticeId: '',
+          freight: '',
+          payment: '',
+          paycode: '',
+          shoppingAddr: '',
           initTime: [],
-          stat: "",
-          createTime: "",
-          createTimeEnd: "",
-          payTime: "",
-          sendTime: "",
-          finishTime: "",
-          comment: "",
-          itemId: ""
+          stat: '',
+          createTime: '',
+          createTimeEnd: '',
+          payTime: '',
+          sendTime: '',
+          finishTime: '',
+          comment: '',
+          itemId: '',
         },
         page: {
           pageSize: 15,
           pageNum: 1,
           total: 0,
-          sortname: "id",
-          sortorder: "desc"
-        }
-      }
-    };
+          sortname: 'id',
+          sortorder: 'desc',
+        },
+      },
+    }
   },
   computed: {
     maxTableHeight() {
       // the max height of table ,depend on what above on the table
-      return document.body.clientHeight - 400;
-    }
+      return document.body.clientHeight - 400
+    },
   },
   mounted() {
-    this.getItems();
-    this.getLogisticsCompany();
+    this.getItems()
+    this.getLogisticsCompany()
   },
   methods: {
     tradeDetail(tradeId) {
-      this.$router.push("/trade/" + tradeId);
+      this.$router.push('/trade/' + tradeId)
     },
     getTime(timeDate) {
-      var Time = new Date(timeDate);
-      var timestemp = Time.getTime();
-      return timestemp;
+      var Time = new Date(timeDate)
+      var timestemp = Time.getTime()
+      return timestemp
     },
     searchItem() {
       this.conditionForm.page = {
         pageNum: 1,
         pageSize: 15,
         total: 0,
-        sortname: "id",
-        sortorder: "desc"
-      };
+        sortname: 'id',
+        sortorder: 'desc',
+      }
       if (
         this.conditionForm.item.initTime &&
         this.conditionForm.item.initTime.length &&
         this.conditionForm.item.initTime != null
       ) {
-        let times = this.conditionForm.item.initTime;
-        this.conditionForm.item.createTime = times[0].getTime() / 1000;
+        let times = this.conditionForm.item.initTime
+        this.conditionForm.item.createTime = times[0].getTime() / 1000
         this.conditionForm.item.createTimeEnd =
-          this.getTime(
-            times[1].toString().substring(0, 16) +
-              "23:59:59 GMT+0800 (中国标准时间)"
-          ) / 1000;
+          this.getTime(times[1].toString().substring(0, 16) + '23:59:59 GMT+0800 (中国标准时间)') / 1000
       } else {
-        this.conditionForm.item.createTime = "";
-        this.conditionForm.item.createTimeEnd = "";
+        this.conditionForm.item.createTime = ''
+        this.conditionForm.item.createTimeEnd = ''
       }
-      this.getItems();
+      this.getItems()
     },
     getLogisticsCompany() {
       this.$http
         .ajax({
-          url: APIHOST + "api/store/getLogisticsCompany",
-          dataType: "json",
-          context: this
+          url: APIHOST + 'api/store/getLogisticsCompany',
+          dataType: 'json',
+          context: this,
         })
-        .done(res => {
+        .done((res) => {
           if (res.result === 1) {
-            this.logisticsCompanies = res.list;
+            this.logisticsCompanies = res.list
           } else {
-            console.log("获取物流公司失败");
+            console.log('获取物流公司失败')
           }
-        });
+        })
     },
     sendGoods(trade) {
-      this.itemId = trade.id;
-      this.sendGoodsTradeId = trade.tradeId;
-      this.logisticsForm.id = trade.logisticsId;
-      this.logisticsForm.type = trade.logisticsType;
-      this.logisticsFormVisible = true;
+      this.itemId = trade.id
+      this.sendGoodsTradeId = trade.tradeId
+      this.logisticsForm.id = trade.logisticsId
+      this.logisticsForm.type = trade.logisticsType
+      this.logisticsFormVisible = true
     },
     saveLogistics() {
-      this.$refs["logisticsForm"].validate(valid => {
+      this.$refs['logisticsForm'].validate((valid) => {
         if (valid) {
-          this.logisticsForm.price = this.logisticsForm.priceDollar * 100;
-          this.logisticsForm.id = this.logisticsForm.id;
-          this.saving = true;
+          this.logisticsForm.price = this.logisticsForm.priceDollar * 100
+          this.logisticsForm.id = this.logisticsForm.id
+          this.saving = true
           this.$http
             .ajax({
-              url: APIHOST + "api/trade/sendGoods",
-              contentType: "application/json; charset=utf-8",
-              type: "post",
-              dataType: "json",
+              url: APIHOST + 'api/trade/sendGoods',
+              contentType: 'application/json; charset=utf-8',
+              type: 'post',
+              dataType: 'json',
               data: JSON.stringify({
                 logistics: this.logisticsForm,
-                id: this.itemId
+                id: this.itemId,
               }),
-              context: this
+              context: this,
             })
-            .done(res => {
+            .done((res) => {
               if (res.result === 1) {
-                this.$message({ message: "发货成功", type: "success" });
-                this.logisticsFormVisible = false;
-                this.getItems();
+                this.$message({ message: '发货成功', type: 'success' })
+                this.logisticsFormVisible = false
+                this.getItems()
               } else {
-                this.$message({ message: res.msg, type: "error" });
+                this.$message({ message: res.msg, type: 'error' })
               }
             })
             .fail(() => {
-              console.log("目标数据保存接口出错");
+              console.log('目标数据保存接口出错')
             })
             .always(() => {
-              this.saving = false;
-            });
+              this.saving = false
+            })
         } else {
-          this.$message({ message: "信息填写错误", type: "error" });
+          this.$message({ message: '信息填写错误', type: 'error' })
         }
-      });
+      })
     },
     /* item form */
     addItem() {
-      this.itemFormVisible = true;
+      this.itemFormVisible = true
     },
     confirmDelete(ids = 0) {
-      let confirmText = "删除此项目吗？";
+      let confirmText = '删除此项目吗？'
       if (!ids) {
         // 勾选操作
-        confirmText = "确定删除选中的项目吗？";
-        ids = this.selectedItems.map(ele => {
-          return ele.id;
-        });
+        confirmText = '确定删除选中的项目吗？'
+        ids = this.selectedItems.map((ele) => {
+          return ele.id
+        })
         if (!ids.length) {
           // 没有勾选
-          this.$message({ message: "请至少选择一项", type: "info" });
-          return false;
+          this.$message({ message: '请至少选择一项', type: 'info' })
+          return false
         } else {
-          ids = ids.join(",");
+          ids = ids.join(',')
         }
       }
-      this.$confirm(confirmText, "确认", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "info"
+      this.$confirm(confirmText, '确认', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'info',
       })
         .then(() => {
-          this.deleteItem(ids);
+          this.deleteItem(ids)
         })
-        .catch(() => {});
+        .catch(() => {})
     },
     deleteItem(id) {
       this.$http
         .ajax({
-          url: APIHOST + "api/trade/delete",
-          type: "get",
+          url: APIHOST + 'api/trade/delete',
+          type: 'get',
           data: { id: id },
-          dataType: "json",
-          context: this
+          dataType: 'json',
+          context: this,
         })
-        .done(res => {
+        .done((res) => {
           if (res.result === 1) {
-            this.$message({ message: "删除成功", type: "success" });
-            this.getItems();
+            this.$message({ message: '删除成功', type: 'success' })
+            this.getItems()
           }
-        });
+        })
     },
 
     /* table 必备 */
     getItems() {
       this.$http
         .ajax({
-          url: APIHOST + "api/trade/list",
-          contentType: "application/json; charset=utf-8", // 是否json提交
-          dataType: "json",
-          type: "post",
+          url: APIHOST + 'api/trade/list',
+          contentType: 'application/json; charset=utf-8', // 是否json提交
+          dataType: 'json',
+          type: 'post',
           data: JSON.stringify(this.conditionForm),
-          context: this
+          context: this,
         })
-        .done(res => {
+        .done((res) => {
           if (res.result === 1) {
             if (res.list <= 0) {
-              this.$message({ message: "没有找到匹配项", type: "info" });
-              this.currentItems = [];
-              return false;
+              this.$message({ message: '没有找到匹配项', type: 'info' })
+              this.currentItems = []
+              return false
             }
-            this.currentItems = res.list;
-            this.conditionForm.page.pageNum = res.page.pageNum;
-            this.conditionForm.page.total = res.page.total;
-            this.conditionForm.page.pageSize = res.page.pageSize;
+            this.currentItems = res.list
+            this.conditionForm.page.pageNum = res.page.pageNum
+            this.conditionForm.page.total = res.page.total
+            this.conditionForm.page.pageSize = res.page.pageSize
           } else {
-            this.$message({ message: "获取入库列表失败", type: "error" });
+            this.$message({ message: '获取入库列表失败', type: 'error' })
           }
-        });
+        })
     },
     sortItems({ prop, order }) {
       if (prop) {
-        this.conditionForm.page.sortname = prop;
-        if (order === "descending") {
-          this.conditionForm.page.sortorder = "desc";
+        this.conditionForm.page.sortname = prop
+        if (order === 'descending') {
+          this.conditionForm.page.sortorder = 'desc'
         } else {
-          this.conditionForm.page.sortorder = "asc";
+          this.conditionForm.page.sortorder = 'asc'
         }
       } else {
-        this.conditionForm.page.sortname = "id";
-        this.conditionForm.page.sortorder = "desc";
+        this.conditionForm.page.sortname = 'id'
+        this.conditionForm.page.sortorder = 'desc'
       }
-      this.getItems();
+      this.getItems()
     },
     selectionChange(selections) {
-      this.selectedItems = selections.map(item => {
-        return item;
-      });
+      this.selectedItems = selections.map((item) => {
+        return item
+      })
     },
     pageSizeChange(size) {
-      this.conditionForm.page.pageSize = size;
-      this.getItems();
+      this.conditionForm.page.pageSize = size
+      this.getItems()
     },
     pageNoChange(no) {
-      this.conditionForm.page.pageNum = no;
-      this.getItems();
+      this.conditionForm.page.pageNum = no
+      this.getItems()
     },
     writeOff(even) {
-      let id = even.id;
-      this.ticeId = even.logisticsId;
-      this.logisticsForm.type = even.logisticsType;
-      this.logisticsForm.id = even.logisticsId;
+      let id = even.id
+      this.ticeId = even.logisticsId
+      this.logisticsForm.type = even.logisticsType
+      this.logisticsForm.id = even.logisticsId
       this.$http
         .ajax({
-          url: APIHOST + "api/trade/sendGoods",
-          contentType: "application/json; charset=utf-8",
-          type: "post",
-          dataType: "json",
+          url: APIHOST + 'api/trade/sendGoods',
+          contentType: 'application/json; charset=utf-8',
+          type: 'post',
+          dataType: 'json',
           data: JSON.stringify({
             logistics: this.logisticsForm,
-            id: id
+            id: id,
           }),
-          context: this
+          context: this,
         })
-        .done(res => {
+        .done((res) => {
           if (res.result === 1) {
-            this.$message({ message: "核销成功", type: "success" });
-            this.logisticsFormVisible = false;
-            this.getItems();
+            this.$message({ message: '核销成功', type: 'success' })
+            this.logisticsFormVisible = false
+            this.getItems()
           } else {
-            this.$message({ message: res.msg, type: "error" });
+            this.$message({ message: res.msg, type: 'error' })
           }
         })
         .fail(() => {
-          console.log("目标数据保存接口出错");
+          console.log('目标数据保存接口出错')
         })
         .always(() => {
-          this.saving = false;
-        });
+          this.saving = false
+        })
     },
     // 导出
     exportList() {
-      var url2 = `${globalConfig.server1}api/trade/exportList`;
-      window.location.href = url2;
+      var url2 = `${globalConfig.server1}api/trade/exportList`
+      window.location.href = url2
     },
-    resetForm: function() {
-      this.$refs["itemForm"].resetFields();
+    resetForm: function () {
+      this.$refs['itemForm'].resetFields()
       this.itemForm = {
         id: -1,
         buyerId: null,
@@ -503,19 +540,19 @@ export default {
         logisticeId: null,
         freight: null,
         payment: null,
-        paycode: "",
+        paycode: '',
         shoppingAddr: null,
         stat: null,
         createTime: null,
         payTime: null,
         sendTime: null,
         finishTime: null,
-        comment: ""
-      };
-      this.logisticsForm = [];
-    }
-  }
-};
+        comment: '',
+      }
+      this.logisticsForm = []
+    },
+  },
+}
 </script>
 <style scoped>
 .date-picker {

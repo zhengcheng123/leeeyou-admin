@@ -18,7 +18,8 @@ Vue.config.productionTip = false;
 if (process.env.NODE_ENV == "development") {
   console.log(window.g.SERVICE_CONTEXT_PATH);
   global.globalConfig = {
-    server1: "http://www.leeeyou.com/jerry_server/",
+    // server1: "http://www.leeeyou.com/jerry_server/",
+    server1: "http://42.192.234.88:9500/jerry_server/",
 
     header: {
       "Content-Type": "application/json"
@@ -44,8 +45,9 @@ Vue.prototype.$axios = axios;
 
 /* ApiHost settings */
 
-const DEVSERVER = "http://www.leeeyou.com/jerry_server/";
-const TESTSERVER = "http://www.leeeyou.com/jerry_server/";
+// const DEVSERVER = "http://www.leeeyou.com/jerry_server/";
+const DEVSERVER = "http://42.192.234.88:9500/jerry_server/";
+// const TESTSERVER = "http://42.192.234.88:9500/";
 const PRODSERVER = "http://www.leeeyou.com/jerry_server/";
 
 const FileDownlaod = "http://218.93.24.35/";

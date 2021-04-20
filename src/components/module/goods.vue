@@ -406,7 +406,7 @@ export default {
       this.DRname = row.name + '(右击图片另存为)'
       this.$nextTick(() => {
         // this.QRCodeMsg = "http://tom.zhengcheng.club/tom/#/item/" + row.id;
-        this.QRCodeMsg = 'http://www.leeeyou.com/#/item/' + row.id
+        this.QRCodeMsg = 'http://www.leeeyou.com/item/' + row.id
       })
     },
 
