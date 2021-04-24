@@ -1,32 +1,48 @@
 <template>
   <div>
-    <div class="crumbs">
-      <el-breadcrumb separator="/">
-        <el-breadcrumb-item to="/store">
-          <i class="fa fa-archive" aria-hidden="true"></i>
-          我的店铺
-        </el-breadcrumb-item>
-        <el-breadcrumb-item>
-          <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
-          创建店铺
-        </el-breadcrumb-item>
-      </el-breadcrumb>
-    </div>
     <div class="content store-info">
-      <el-form :model="itemForm" ref="itemForm" label-width="90px" class="store-form" :rules="itemFormRules">
-        <el-form-item label="店铺名称" prop="name">
+      <el-form :model="itemForm"
+               ref="itemForm"
+               label-width="90px"
+               class="store-form"
+               :rules="itemFormRules">
+        <el-form-item label="店铺名称"
+                      prop="name">
           <el-input v-model.trim="itemForm.name"></el-input>
         </el-form-item>
-        <el-form-item label="店铺地址" prop="address">
+        <el-form-item label="店铺地址"
+                      prop="address">
           <el-input v-model.trim="itemForm.address"></el-input>
         </el-form-item>
-        <el-form-item label="店铺图标" prop="icon">
-          <image-upload name="icon" :externalPreviewImages="[]" mode="upload" :limit="1" accept="image/*" ref="iconUploader" :uploadUrl="$IMGHOST+'upload'" :success="setIcon" width="100px" height="100px"></image-upload>
+        <el-form-item label="店铺图标"
+                      prop="icon">
+          <image-upload name="icon"
+                        :externalPreviewImages="[]"
+                        mode="upload"
+                        :limit="1"
+                        accept="image/*"
+                        ref="iconUploader"
+                        :uploadUrl="$IMGHOST+'upload'"
+                        :success="setIcon"
+                        width="100px"
+                        height="100px"></image-upload>
         </el-form-item>
-        <el-form-item label="店铺背景" prop="index_html">
-          <image-upload name="index" :externalPreviewImages="[]" mode="upload" :limit="1" accept="image/*" ref="indexUploader" :uploadUrl="$IMGHOST+'upload'" :success="createStore" width="100px" height="100px"></image-upload>
+        <el-form-item label="店铺背景"
+                      prop="index_html">
+          <image-upload name="index"
+                        :externalPreviewImages="[]"
+                        mode="upload"
+                        :limit="1"
+                        accept="image/*"
+                        ref="indexUploader"
+                        :uploadUrl="$IMGHOST+'upload'"
+                        :success="createStore"
+                        width="100px"
+                        height="100px"></image-upload>
         </el-form-item>
-        <button  class="lg-btn" :loading="saving" @click="saveItem">创建</button>
+        <button class="lg-btn"
+                :loading="saving"
+                @click="saveItem">创建</button>
       </el-form>
     </div>
   </div>
@@ -43,19 +59,19 @@ export default {
         name: '',
         address: '',
         icon: 'noimage',
-        indexHtml: ''
+        indexHtml: '',
       },
       itemFormRules: {
         name: [{ required: true, message: '请输入店铺名称' }],
         address: [{ required: true, message: '请输入店铺的实际地址，可以写注册人的地址' }],
-        icon: [{ required: true, message: '请选取图片' }]
+        icon: [{ required: true, message: '请选取图片' }],
       },
-      saving: false
+      saving: false,
     }
   },
   methods: {
     saveItem() {
-      this.$refs['itemForm'].validate(valide => {
+      this.$refs['itemForm'].validate((valide) => {
         if (!valide) {
           this.$message.error('信息填写错误')
           return false
@@ -83,9 +99,9 @@ export default {
           contentType: 'application/json; charset=utf-8',
           type: 'post',
           dataType: 'json',
-          data: JSON.stringify(this.itemForm)
+          data: JSON.stringify(this.itemForm),
         })
-        .done(res => {
+        .done((res) => {
           if (res.result === 1) {
             this.$message({ message: '创建店铺成功', type: 'success' })
             this.$router.push('/store')
@@ -99,8 +115,8 @@ export default {
         .always(() => {
           this.saving = false
         })
-    }
-  }
+    },
+  },
 }
 </script>
 <style scoped>
@@ -117,9 +133,9 @@ export default {
   margin-top: 30px;
   color: #fff;
 }
-.store-info{
+.store-info {
   background-color: #fff;
   padding: 10px;
-    margin: 10px;
+  margin: 10px;
 }
 </style>

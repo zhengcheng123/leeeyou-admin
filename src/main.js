@@ -1,26 +1,25 @@
-// The Vue build version to load with the `import` command
-// (runtime-only or standalone) has been set in webpack.base.conf with an alias.
 import Vue from "vue";
 import ElementUI from "element-ui";
-import "element-ui/lib/theme-chalk/index.css";
+// import "element-ui/lib/theme-chalk/index.css";
 import App from "./App";
 import router from "./router";
 import jquery from "jquery";
 import axios from "axios";
 import storeCan from "./store/store.js";
-
 import "font-awesome-webpack"; // font-awesome
+import "./assets/element-variables.scss";
+import "./assets/global.scss"; // global css
+import "./assets/custom.scss";
 import "./assets/iconfonts/iconfont.css"; // icon-font
-import "./assets/global.css"; // global css
+
 
 Vue.use(ElementUI);
 Vue.config.productionTip = false;
 if (process.env.NODE_ENV == "development") {
   console.log(window.g.SERVICE_CONTEXT_PATH);
   global.globalConfig = {
-    // server1: "http://www.leeeyou.com/jerry_server/",
-    server1: "http://42.192.234.88:9500/jerry_server/",
-
+    server1: "http://www.leeeyou.com/jerry_server/",
+    // server1: "http://42.192.234.88:9500/jerry_server/",
     header: {
       "Content-Type": "application/json"
     }
@@ -41,13 +40,9 @@ axios.defaults.headers = globalConfig.header;
 Vue.prototype.$http = jquery;
 
 Vue.prototype.$axios = axios;
-/* eslint-disable no-new */
 
-/* ApiHost settings */
-
-// const DEVSERVER = "http://www.leeeyou.com/jerry_server/";
-const DEVSERVER = "http://42.192.234.88:9500/jerry_server/";
-// const TESTSERVER = "http://42.192.234.88:9500/";
+// const DEVSERVER = "http://42.192.234.88:9500/jerry_server/";
+const DEVSERVER = "http://www.leeeyou.com/jerry_server/";
 const PRODSERVER = "http://www.leeeyou.com/jerry_server/";
 
 const FileDownlaod = "http://218.93.24.35/";

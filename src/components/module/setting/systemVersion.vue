@@ -19,27 +19,27 @@
         <div class="search-btnT">
           <el-button
             type="primary"
-            size="small"
+            size="mini"
             @click="getTableItems"
           >查询</el-button>
                       <!-- v-if="$_has('versionSave')" -->
           <el-button
             type="success"
-            size="small"
+            size="mini"
             :disabled="checkId.length !== 0"
             @click="addtable"
           >添加</el-button>
                       <!-- v-if="$_has('versionDelete')" -->
           <el-button
             type="info"
-            size="small"
+            size="mini"
             @click="deleteItems"
             :disabled="checkId.length == 0"
           >删除</el-button>
                       <!-- v-if="$_has('versionSaveOrUpdate')" -->
           <el-button
             type="primary"
-            size="small"
+            size="mini"
             :disabled="checkId.length !== 1"
             @click="uptable(1)"
           >编辑</el-button>
@@ -120,7 +120,7 @@
             v-model.trim="ConInfoForm.number"
             clearable
             maxlength="5"
-            size="small"
+            size="mini"
             placeholder="输入形式：1.00"
             autocomplete="off"
           ></el-input>
@@ -131,7 +131,7 @@
             <!-- <el-input
               v-model="ConInfoForm.status"
               clearable
-              size="small"
+              size="mini"
               placeholder="请输入"
               autocomplete="off"
             ></el-input>-->
@@ -155,7 +155,7 @@
             <el-input
               v-model.trim="ConInfoForm.msg"
               clearable
-              size="small"
+              size="mini"
               type="textarea"
               :autosize="{ minRows: 2, maxRows: 10}"
               placeholder="请输入"
@@ -165,8 +165,8 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button size="small" type="success" :loading="submitLoading" @click="submitFom">提 交</el-button>
-        <el-button size="small" type="info" @click="dialogFormVisible = false">取 消</el-button>
+        <el-button size="mini" type="success" :loading="submitLoading" @click="submitFom">提 交</el-button>
+        <el-button size="mini" type="info" @click="dialogFormVisible = false">取 消</el-button>
       </div>
     </el-dialog>
   </div>

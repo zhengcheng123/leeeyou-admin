@@ -1,211 +1,204 @@
 <template>
-  <div>
-    <div class="crumbs">
-      <el-breadcrumb separator="/">
-        <el-breadcrumb-item>
-          <i class="fa fa-users"
-             aria-hidden="true"></i>
-          交易管理
-        </el-breadcrumb-item>
-      </el-breadcrumb>
+  <div class="wrapper">
+    <div class="search_bar">
+      <el-form :inline="true">
+        <el-form-item label="创建时间">
+          <el-date-picker class="date-picker"
+                          size="mini"
+                          v-model="conditionForm.item.initTime"
+                          type="daterange"
+                          range-separator="至"
+                          start-placeholder="开始"
+                          end-placeholder="结束"></el-date-picker>
+        </el-form-item>
+        <el-form-item label="订单号"
+                      prop="code">
+          <el-input clearable
+                    size="mini"
+                    placeholder="请输入"
+                    v-model.trim="conditionForm.item.code"></el-input>
+        </el-form-item>
+        <el-form-item label="状态"
+                      prop="stat">
+          <el-select clearable
+                     size="mini"
+                     v-model="conditionForm.item.stat">
+            <el-option v-for="item in states"
+                       :key="item.value"
+                       :label="item.label"
+                       :value="item.value"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary"
+                     size="mini"
+                     @click="search">搜 索</el-button>
+          <el-button size="mini"
+                     @click="reset">重 置</el-button>
+        </el-form-item>
+      </el-form>
     </div>
-    <div class="content">
-      <div class="goods-row">
-        <div class="row">
+    <!--<el-button icon="plus" size="mini" @click="addItem" class="f-left">新增</el-button>-->
+    <!--<el-button icon="delete" size="mini" plain type="danger" @click="confirmDelete()"-->
+    <!--class="f-left">删除-->
+    <!--</el-button>-->
+    <section>
+      <div class="operate_bar">
+        <div class="left">
           <el-radio-group v-model="conditionForm.item.stat"
                           @change="getItems">
-            <el-radio-button :label="''">全部</el-radio-button>
-            <el-radio-button v-for="item in states"
-                             :label="item.value">{{item.label}}</el-radio-button>
+            <el-radio :label="''">全部</el-radio>
+            <el-radio v-for="item in states"
+                      :key="item.label"
+                      :label="item.value">{{item.label}}</el-radio>
           </el-radio-group>
         </div>
-        <div class="row">
-          <el-form :inline="true">
-            <el-form-item label="创建时间">
-              <el-date-picker class="date-picker"
-                              v-model="conditionForm.item.initTime"
-                              type="daterange"
-                              range-separator="至"
-                              start-placeholder="开始"
-                              end-placeholder="结束"></el-date-picker>
-            </el-form-item>
-            <el-form-item label="订单号"
-                          prop="code">
-              <el-input clearable
-                        v-model.trim="conditionForm.item.code"></el-input>
-            </el-form-item>
-            <el-form-item label="状态"
-                          prop="stat">
-              <el-select clearable
-                         v-model="conditionForm.item.stat">
-                <el-option v-for="item in states"
-                           :key="item.value"
-                           :label="item.label"
-                           :value="item.value"></el-option>
-              </el-select>
-            </el-form-item>
-            <el-form-item>
-              <el-button type="primary"
-                         class="f-left adds-btn"
-                         @click="searchItem">搜索</el-button>
-              <el-button type="primary"
-                         class="f-left adds-btn"
-                         @click="exportList()">导出</el-button>
-            </el-form-item>
-          </el-form>
-          <!--<el-button icon="plus" size="small" @click="addItem" class="f-left">新增</el-button>-->
-          <!--<el-button icon="delete" size="small" plain type="danger" @click="confirmDelete()"-->
-          <!--class="f-left">删除-->
-          <!--</el-button>-->
+        <div class="right">
+          <el-button size="mini"
+                     @click="exportList()">导 出</el-button>
         </div>
       </div>
-      <section class="section"
-               style="background:#fff">
-        <el-table :data="currentItems"
-                  @selection-change="selectionChange"
-                  border
-                  style="width: 100%"
-                  :header-cell-style="{background:'#E8EAEE',height:'48px',}"
-                  @sort-change="sortItems"
-                  :max-height="maxTableHeight"
-                  class="trade-table">
-          <el-table-column type="selection"
-                           width="55"
-                           align="center"></el-table-column>
-          <el-table-column prop="code"
-                           min-width="190"
-                           label="订单号"
-                           align="center"></el-table-column>
-          <el-table-column prop="payment"
-                           min-width="120"
-                           label="实际付款"
-                           sortable
-                           align="center">
-            <template slot-scope="props">{{pennyToDollar(props.row.payment)}}</template>
-          </el-table-column>
-          <!-- <el-table-column prop="paycode" label="支付交易编号" align="center"></el-table-column> -->
-          <el-table-column prop="buyerName"
-                           min-width="120"
-                           label="客户"
-                           align="center"></el-table-column>
-          <!--<el-table-column prop="shopping_addr" label="收货地址id" sortable></el-table-column>-->
-          <!--<el-table-column prop="stat" label="交易状态" sortable align="center"></el-table-column>-->
-          <el-table-column prop="comment"
-                           min-width="120"
-                           label="买家备注"
-                           align="center"></el-table-column>
-          <el-table-column label="配送方式"
-                           min-width="120"
-                           align="center">
-            <template slot-scope="props">
-              <span v-if="props.row.logisticsType === 1">快递</span>
-              <span v-if="props.row.logisticsType === 2">自提</span>
-              <span v-if="props.row.logisticsType === 3">无物流</span>
-            </template>
-          </el-table-column>
-          <el-table-column prop="freight"
-                           min-width="120"
-                           label="运费"
-                           sortable>
-            <template slot-scope="props">{{pennyToDollar(props.row.freight)}}</template>
-          </el-table-column>
-          <el-table-column prop="stat"
-                           min-width="120"
-                           label="状态"
-                           sortable
-                           align="center">
-            <template slot-scope="props">{{renderStateLabel(states, props.row.stat)}}</template>
-          </el-table-column>
-          <el-table-column prop="createTime"
-                           min-width="190"
-                           label="创建时间"
-                           sortable
-                           align="center">
-            <template slot-scope="props">{{renderTime(props.row.createTime)}}</template>
-          </el-table-column>
-          <el-table-column prop="payTime"
-                           min-width="190"
-                           label="付款时间"
-                           sortable
-                           align="center">
-            <template slot-scope="props">{{renderTime(props.row.payTime)}}</template>
-          </el-table-column>
-          <el-table-column prop="sendTime"
-                           min-width="190"
-                           label="发货时间"
-                           sortable
-                           align="center">
-            <template slot-scope="props">{{renderTime(props.row.sendTime)}}</template>
-          </el-table-column>
-          <el-table-column prop="finishTime"
-                           min-width="190"
-                           label="成交时间"
-                           sortable
-                           align="center">
-            <template slot-scope="props">{{renderTime(props.row.finishTime)}}</template>
-          </el-table-column>
-          <el-table-column label="操作"
-                           min-width="190"
-                           align="center">
-            <template scope="props">
-              <div class="btn-group">
-                <el-button class="btn-delive"
-                           v-if="props.row.logisticsType===1"
-                           type="text"
-                           :disabled="props.row.stat!==2"
-                           @click="sendGoods(props.row)">发货</el-button>
-                <el-button class="btn-delive"
-                           v-if="props.row.logisticsType===2"
-                           type="text"
-                           :disabled="props.row.stat!==2"
-                           @click="writeOff(props.row)">核销</el-button>
-                <el-button class="btn-delive"
-                           type="text"
-                           @click="tradeDetail(props.row.id)">详情</el-button>
-              </div>
-            </template>
-          </el-table-column>
-        </el-table>
-        <el-pagination class="pagination"
-                       @size-change="pageSizeChange"
-                       :page-sizes="[15,30,50,100]"
-                       :page-size="conditionForm.page.pageSize"
-                       :current-page="conditionForm.page.pageNum"
-                       @current-change="pageNoChange"
-                       layout="total, sizes,prev, pager, next, jumper"
-                       :total="conditionForm.page.total"></el-pagination>
-      </section>
+      <el-table :data="currentItems"
+                @selection-change="selectionChange"
+                style="width: 100%"
+                @sort-change="sortItems"
+                height="0"
+                :header-cell-style="{background:'var(--background1)'}">
+        <el-table-column type="selection"
+                         width="55"
+                         align="center"></el-table-column>
+        <el-table-column prop="code"
+                         min-width="190"
+                         label="订单号"
+                         align="center"></el-table-column>
+        <el-table-column prop="payment"
+                         min-width="120"
+                         label="实际付款"
+                         sortable
+                         align="center">
+          <template slot-scope="props">{{pennyToDollar(props.row.payment)}}</template>
+        </el-table-column>
+        <!-- <el-table-column prop="paycode" label="支付交易编号" align="center"></el-table-column> -->
+        <el-table-column prop="buyerName"
+                         min-width="120"
+                         label="客户"
+                         align="center"></el-table-column>
+        <!--<el-table-column prop="shopping_addr" label="收货地址id" sortable></el-table-column>-->
+        <!--<el-table-column prop="stat" label="交易状态" sortable align="center"></el-table-column>-->
+        <el-table-column prop="comment"
+                         min-width="120"
+                         label="买家备注"
+                         align="center"></el-table-column>
+        <el-table-column label="配送方式"
+                         min-width="120"
+                         align="center">
+          <template slot-scope="props">
+            <span v-if="props.row.logisticsType === 1">快递</span>
+            <span v-if="props.row.logisticsType === 2">自提</span>
+            <span v-if="props.row.logisticsType === 3">无物流</span>
+          </template>
+        </el-table-column>
+        <el-table-column prop="freight"
+                         min-width="120"
+                         label="运费"
+                         sortable>
+          <template slot-scope="props">{{pennyToDollar(props.row.freight)}}</template>
+        </el-table-column>
+        <el-table-column prop="stat"
+                         min-width="120"
+                         label="状态"
+                         sortable
+                         align="center">
+          <template slot-scope="props">{{renderStateLabel(states, props.row.stat)}}</template>
+        </el-table-column>
+        <el-table-column prop="createTime"
+                         min-width="190"
+                         label="创建时间"
+                         sortable
+                         align="center">
+          <template slot-scope="props">{{renderTime(props.row.createTime)}}</template>
+        </el-table-column>
+        <el-table-column prop="payTime"
+                         min-width="190"
+                         label="付款时间"
+                         sortable
+                         align="center">
+          <template slot-scope="props">{{renderTime(props.row.payTime)}}</template>
+        </el-table-column>
+        <el-table-column prop="sendTime"
+                         min-width="190"
+                         label="发货时间"
+                         sortable
+                         align="center">
+          <template slot-scope="props">{{renderTime(props.row.sendTime)}}</template>
+        </el-table-column>
+        <el-table-column prop="finishTime"
+                         min-width="190"
+                         label="成交时间"
+                         sortable
+                         align="center">
+          <template slot-scope="props">{{renderTime(props.row.finishTime)}}</template>
+        </el-table-column>
+        <el-table-column label="操作"
+                         min-width="190"
+                         align="center">
+          <template scope="props">
+            <div class="btn-group">
+              <el-button class="btn-delive"
+                         v-if="props.row.logisticsType===1"
+                         type="text"
+                         :disabled="props.row.stat!==2"
+                         @click="sendGoods(props.row)">发货</el-button>
+              <el-button class="btn-delive"
+                         v-if="props.row.logisticsType===2"
+                         type="text"
+                         :disabled="props.row.stat!==2"
+                         @click="writeOff(props.row)">核销</el-button>
+              <el-button class="btn-delive"
+                         type="text"
+                         @click="tradeDetail(props.row.id)">详情</el-button>
+            </div>
+          </template>
+        </el-table-column>
+      </el-table>
+      <el-pagination background
+                     class="pagination"
+                     @size-change="pageSizeChange"
+                     :page-sizes="[15,30,50,100]"
+                     :page-size="conditionForm.page.pageSize"
+                     :current-page="conditionForm.page.pageNum"
+                     @current-change="pageNoChange"
+                     layout="total, sizes,prev, pager, next, jumper"
+                     :total="conditionForm.page.total"></el-pagination>
+    </section>
+    <el-dialog title="发货"
+               :visible.sync="logisticsFormVisible"
+               custom-class="logistics-dialog"
+               @close="resetForm">
+      <el-form :model="logisticsForm"
+               ref="logisticsForm"
+               label-width="90px"
+               class="account-form"
+               :rules="logisticsFormRules">
 
-      <!--item form-->
-      <el-dialog title="发货"
-                 :visible.sync="logisticsFormVisible"
-                 custom-class="logistics-dialog"
-                 @close="resetForm">
-        <el-form :model="logisticsForm"
-                 ref="logisticsForm"
-                 label-width="90px"
-                 class="account-form"
-                 :rules="logisticsFormRules">
-
-          <el-form-item label="运单号"
-                        prop="logisticsCode">
-            <el-input v-model.trim="logisticsForm.logisticsCode"></el-input>
-          </el-form-item>
-          <!-- <el-form-item label="运费" prop="priceDollar">
+        <el-form-item label="运单号"
+                      prop="logisticsCode">
+          <el-input v-model.trim="logisticsForm.logisticsCode"></el-input>
+        </el-form-item>
+        <!-- <el-form-item label="运费" prop="priceDollar">
             <el-input v-model.number="logisticsForm.priceDollar"></el-input>
           </el-form-item>-->
-          <el-form-item label="备注"
-                        prop="comment">
-            <el-input v-model.trim="logisticsForm.comment"></el-input>
-          </el-form-item>
-          <div class="butn">
-            <el-button class="lg-btn sure-btn"
-                       :loading="saving"
-                       @click="saveLogistics">确认</el-button>
-          </div>
-        </el-form>
-      </el-dialog>
-    </div>
+        <el-form-item label="备注"
+                      prop="comment">
+          <el-input v-model.trim="logisticsForm.comment"></el-input>
+        </el-form-item>
+        <div class="butn">
+          <el-button class="lg-btn sure-btn"
+                     :loading="saving"
+                     @click="saveLogistics">确认</el-button>
+        </div>
+      </el-form>
+    </el-dialog>
   </div>
 </template>
 <script>
@@ -288,12 +281,6 @@ export default {
       },
     }
   },
-  computed: {
-    maxTableHeight() {
-      // the max height of table ,depend on what above on the table
-      return document.body.clientHeight - 400
-    },
-  },
   mounted() {
     this.getItems()
     this.getLogisticsCompany()
@@ -307,7 +294,7 @@ export default {
       var timestemp = Time.getTime()
       return timestemp
     },
-    searchItem() {
+    search() {
       this.conditionForm.page = {
         pageNum: 1,
         pageSize: 15,
@@ -315,21 +302,17 @@ export default {
         sortname: 'id',
         sortorder: 'desc',
       }
-      if (
-        this.conditionForm.item.initTime &&
-        this.conditionForm.item.initTime.length &&
-        this.conditionForm.item.initTime != null
-      ) {
+      if (this.conditionForm.item.initTime && this.conditionForm.item.initTime.length && this.conditionForm.item.initTime != null) {
         let times = this.conditionForm.item.initTime
         this.conditionForm.item.createTime = times[0].getTime() / 1000
-        this.conditionForm.item.createTimeEnd =
-          this.getTime(times[1].toString().substring(0, 16) + '23:59:59 GMT+0800 (中国标准时间)') / 1000
+        this.conditionForm.item.createTimeEnd = this.getTime(times[1].toString().substring(0, 16) + '23:59:59 GMT+0800 (中国标准时间)') / 1000
       } else {
         this.conditionForm.item.createTime = ''
         this.conditionForm.item.createTimeEnd = ''
       }
       this.getItems()
     },
+    reset() {},
     getLogisticsCompany() {
       this.$http
         .ajax({

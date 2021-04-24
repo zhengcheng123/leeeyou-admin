@@ -1,0 +1,27 @@
+:root {
+  --white: #ffffff;
+  --black: #000000;
+  --primary: #f4a261;
+  --primary-light: #f3b769;
+  // --primary-light: #eb8600;
+  --background: #e8eaee;
+  --background1: #e8eaee;
+
+  --title3: #333333;
+  --title6: #666666;
+
+  --font-huge: 20px;
+  --font-large: 18px;
+  --font-medium: 16px;
+  --font-normal: 14px;
+  --font-small: 12px;
+}
+
+/* 改变主题色变量 */
+$-color-white: #ffffff;
+$--color-primary: #f4a261;
+
+/* 改变 icon 字体路径变量，必需 */
+$--font-path: "~element-ui/lib/theme-chalk/fonts";
+
+@import "~element-ui/packages/theme-chalk/src/index";

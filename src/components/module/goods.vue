@@ -1,242 +1,227 @@
 <template>
-  <div id="goods-index">
-    <div class="crumbs">
-      <el-breadcrumb separator="/">
-        <el-breadcrumb-item>
-          <i class="fa fa-shopping-bag"
-             aria-hidden="true"></i>
-          商品管理
-        </el-breadcrumb-item>
-      </el-breadcrumb>
-    </div>
-    <div class="content">
-      <div class="goods-row clearfix">
-        <div class="row">
-          <!--<el-button icon="el-icon-delete" size="small" plain type="danger" @click="confirmDelete()"-->
-          <!--class="f-left">删除-->
-          <!--</el-button>-->
-        </div>
-        <div class="row">
-          <el-form :inline="true">
-            <el-form-item label="商品名称："
-                          prop="name">
-              <el-input clearable
-                        v-model.trim="conditionForm.condition.name"></el-input>
-            </el-form-item>
-            <el-form-item label="销售状态："
-                          prop="state">
-              <el-select clearable
-                         v-model="conditionForm.condition.state">
-                <el-option v-for="item in options"
-                           :key="item.value"
-                           :label="item.label"
-                           :value="item.value"></el-option>
-              </el-select>
-            </el-form-item>
-            <el-form-item label="商品类型："
-                          prop="type">
-              <el-select clearable
-                         v-model="conditionForm.condition.type">
-                <el-option v-for="item in states"
-                           :key="item.id"
-                           :label="item.typeName"
-                           :value="item.id"></el-option>
-              </el-select>
-            </el-form-item>
-            <el-form-item label="热销商品："
-                          prop="state">
-              <el-select clearable
-                         v-model="conditionForm.condition.recommend">
-                <el-option v-for="item in recommendOptions"
-                           :key="item.value"
-                           :label="item.label"
-                           :value="item.value"></el-option>
-              </el-select>
-            </el-form-item>
-            <el-form-item>
-              <el-button type="primary"
-                         @click="searchData"
-                         class="f-left">搜索</el-button>
-              <el-button type="primary"
-                         size="small"
-                         @click="addItem"
-                         class="f-left">新增</el-button>
-            </el-form-item>
-          </el-form>
-        </div>
-      </div>
-      <section v-loading="tableLoading"
-               style="background:#fff;padding:10px"
-               class="se-table clearfix">
-        <div class="section-add">
-          <!-- <el-button size="small" @click="confirmBan" class="f-left">下架</el-button>
-          <el-button size="small" @click="confirmPut" class="f-left">上架</el-button>-->
-        </div>
-        <el-table :data="currentItems"
-                  @selection-change="selectionChange"
-                  style="width: 100%"
-                  @sort-change="sortItems"
-                  :max-height="maxTableHeight"
-                  :header-cell-style="{background:'#E8EAEE',height:'48px',}">
-          <el-table-column align="center"
-                           type="selection"
-                           width="55"></el-table-column>
-          <el-table-column align="center"
-                           min-width="100"
-                           prop="typeName"
-                           label="类型"></el-table-column>
-          <el-table-column align="center"
-                           min-width="120"
-                           prop="name"
-                           label="名称"></el-table-column>
-          <el-table-column align="center"
-                           min-width="120"
-                           prop="canSellSize"
-                           label="库存"></el-table-column>
-          <el-table-column align="center"
-                           min-width="120"
-                           prop="sellSize"
-                           label="销量"></el-table-column>
-          <!-- <el-table-column align="center" min-width="120" prop="maxPrice" label="最高价"></el-table-column>
-          <el-table-column align="center" min-width="120" prop="minPrice" label="最低价"></el-table-column>-->
+  <div class="wrapper">
+    <div class="search_bar">
+      <!-- <div class="row"> -->
+      <!--<el-button icon="el-icon-delete" size="mini" plain type="danger" @click="confirmDelete()"-->
+      <!--class="f-left">删除-->
+      <!--</el-button>-->
+      <!-- </div> -->
+      <el-form :inline="true">
+        <el-form-item label="商品名称"
+                      prop="name">
+          <el-input clearable
+                    size="mini"
+                    placeholder="请输入"
+                    v-model.trim="conditionForm.condition.name"></el-input>
+        </el-form-item>
+        <el-form-item label="销售状态"
+                      prop="state">
+          <el-select size="mini"
+                     v-model="conditionForm.condition.state">
+            <el-option v-for="item in saleOptions"
+                       :key="item.value"
+                       :label="item.label"
+                       :value="item.value"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="商品类型"
+                      prop="type">
+          <el-select clearable
+                     size="mini"
+                     v-model="conditionForm.condition.type">
+            <el-option v-for="item in states"
+                       :key="item.id"
+                       :label="item.typeName"
+                       :value="item.id"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="热销商品"
+                      prop="state">
+          <el-select clearable
+                     size="mini"
+                     v-model="conditionForm.condition.recommend">
+            <el-option v-for="item in recommendOptions"
+                       :key="item.value"
+                       :label="item.label"
+                       :value="item.value"></el-option>
+          </el-select>
+        </el-form-item>
+      </el-form>
+      <div class="right">
+        <el-button size="mini"
+                   type="primary"
+                   icon="el-icon-search"
+                   @click="search">搜索</el-button>
+        <el-button size="mini"
+                   icon="el-icon-refresh-right"
+                   @click="resetSearch">重置</el-button>
 
-          <el-table-column align="center"
-                           min-width="160"
-                           prop="description"
-                           label="商品描述"></el-table-column>
-          <!-- <el-table-column align="center" min-width="110" prop="sellStat" label="销售状态">
+      </div>
+    </div>
+    <section v-loading="tableLoading">
+      <div class="operate_bar">
+        <!-- <el-button size="mini" @click="confirmBan" class="f-left">下架</el-button>
+          <el-button size="mini" @click="confirmPut" class="f-left">上架</el-button>-->
+        <div class="left">
+          <el-button size="mini"
+                     @click="addItem">添加商品</el-button>
+        </div>
+
+      </div>
+      <!-- @selection-change="selectionChange" -->
+      <!-- :height="tableHeight" -->
+
+      <el-table :data="currentItems"
+                style="width: 100%"
+                @sort-change="sortItems"
+                height="0"
+                :header-cell-style="{background:'var(--background1)'}">
+        <!-- <el-table-column 
+                           type="selection"
+                           width="55"></el-table-column> -->
+        <el-table-column width="80"
+                         prop="typeName"
+                         label="类型"></el-table-column>
+        <el-table-column min-width="120"
+                         prop="name"
+                         label="名称"></el-table-column>
+        <el-table-column width="80"
+                         prop="canSellSize"
+                         label="库存"></el-table-column>
+        <el-table-column width="80"
+                         prop="sellSize"
+                         label="销量"></el-table-column>
+        <!-- <el-table-column  min-width="120" prop="maxPrice" label="最高价"></el-table-column>
+          <el-table-column  min-width="120" prop="minPrice" label="最低价"></el-table-column>-->
+
+        <el-table-column min-width="200"
+                         prop="description"
+                         label="商品描述"></el-table-column>
+        <!-- <el-table-column  min-width="110" prop="sellStat" label="销售状态">
             <template slot-scope="props">
               <span v-if="props.row.sellStat != -1">在售</span>
               <span v-else>停售</span>
             </template>
           </el-table-column>-->
-          <el-table-column align="center"
-                           min-width="160"
-                           prop="sellStat"
-                           label="销售状态">
-            <template slot-scope="props">
-              <el-switch v-model="props.row.sellStat"
-                         active-text="上架"
-                         inactive-text="下架"
-                         active-value="1"
-                         inactive-value="-1"
-                         active-color="#eb8600"
-                         inactive-color="#bbb"
-                         @change="updateSwitch($event, props.row)"></el-switch>
-            </template>
-          </el-table-column>
-
-          <el-table-column sortable
-                           align="center"
-                           prop="enable"
-                           label="热销商品"
-                           min-width="150">
-            <template slot-scope="props">
-              <el-switch :disabled="props.row.sellStat!=1"
-                         v-model="props.row.recommend"
-                         active-value="1"
-                         inactive-value="0"
-                         active-color="#eb8600"
-                         inactive-color="#bbb"
-                         @change="goodsSwitch($event, props.row)"></el-switch>
-            </template>
-          </el-table-column>
-          <el-table-column sortable
-                           align="center"
-                           label="排序"
-                           min-width="120">
-            <template slot-scope="props">
-              <el-input @keyup.native="sortInfo(props.row)"
-                        v-model="props.row.sort"
-                        style="width:100px"
-                        placeholder="请输入内容"></el-input>
-            </template>
-          </el-table-column>
-          <el-table-column align="center"
-                           label="操作"
-                           min-width="250">
-            <template slot-scope="props">
-              <div class="btn-group">
-                <button class="see-btn"
-                        @click="getQRCode(props.row)">二维码</button>
-                <button class="see-btn"
-                        @click="infoGoods(props.row,'info')">详情</button>
-                <button class="edit-btn"
-                        @click="infoGoods(props.row, 'edit')">编辑</button>
-                <!-- <button class="detail-btn" @click="confirmDelete(props.row.id)">删除</button> -->
-              </div>
-            </template>
-          </el-table-column>
-        </el-table>
-        <el-pagination class="pagination"
-                       @size-change="pageSizeChange"
-                       :page-sizes="[15,30,50,100]"
-                       :page-size="conditionForm.page.pageSize"
-                       :current-page="conditionForm.page.pageNum"
-                       @current-change="pageNoChange"
-                       layout="total, sizes,prev, pager, next, jumper"
-                       :total="conditionForm.page.total"></el-pagination>
-      </section>
-      <!--item form-->
-      <el-dialog title="编辑"
-                 :visible.sync="itemFormVisible"
-                 size="tiny"
-                 custom-class="goods-dialog"
-                 @close="resetForm">
-        <el-form :model="itemForm"
-                 ref="itemForm"
-                 label-width="90px"
-                 class="account-form"
-                 :rules="itemFormRules">
-          <el-form-item label="商品名称"
-                        prop="name">
-            <span>{{itemForm.name}}</span>
-            <!--<el-input v-model.trim="itemForm.name"></el-input>-->
-          </el-form-item>
-          <el-form-item label="商品描述"
-                        prop="description">
-            <el-input v-model.trim="itemForm.description"></el-input>
-          </el-form-item>
-          <el-form-item label="定价"
-                        prop="priceDollar">
-            <el-input v-model.number="itemForm.priceDollar"></el-input>
-          </el-form-item>
-          <el-form-item label="成本"
-                        prop="procurementPriceDollar">
-            <el-input v-model.number="itemForm.procurementPriceDollar"></el-input>
-          </el-form-item>
-          <el-form-item label="运费"
-                        prop="transformFeeDollar">
-            <el-input v-model.number="itemForm.transformFeeDollar"></el-input>
-          </el-form-item>
-          <el-form-item label="可售库存"
-                        prop="canSellSize">
-            <el-input v-model.number="itemForm.canSellSize"></el-input>
-          </el-form-item>
-          <el-form-item label="总库存"
-                        prop="size">
-            <el-input v-model.number="itemForm.size"></el-input>
-          </el-form-item>
-          <el-form-item label="已售"
-                        prop="sellSize">
-            <span>{{itemForm.sellSize}}</span>
-            <!--<el-input v-model.number="itemForm.sellSize"></el-input>-->
-          </el-form-item>
-          <el-button type="primary"
-                     class="lg-btn"
-                     :loading="saving"
-                     @click="updateGoods">保存</el-button>
-        </el-form>
-      </el-dialog>
-      <el-dialog :title="DRname"
-                 :visible.sync="QRVisible"
-                 width="30%"
-                 size="tiny"
-                 class="ORstyle"
-                 custom-class="goods-dialog">
-        <canvas id="QRCode"></canvas>
-      </el-dialog>
-    </div>
+        <el-table-column width="160"
+                         prop="sellStat"
+                         label="销售状态">
+          <template slot-scope="props">
+            <el-switch v-model="props.row.sellStat"
+                       size="mini"
+                       active-text="上架"
+                       inactive-text="下架"
+                       active-value="1"
+                       inactive-value="-1"
+                       @change="updateSwitch($event, props.row)"></el-switch>
+          </template>
+        </el-table-column>
+        <el-table-column width="120"
+                         sortable
+                         prop="enable"
+                         label="热销商品">
+          <template slot-scope="props">
+            <el-switch :disabled="props.row.sellStat!=1"
+                       size="mini"
+                       v-model="props.row.recommend"
+                       active-value="1"
+                       inactive-value="0"
+                       @change="goodsSwitch($event, props.row)"></el-switch>
+          </template>
+        </el-table-column>
+        <el-table-column width="120"
+                         sortable
+                         label="排序">
+          <template slot-scope="props">
+            <el-input @keyup.native="sortInfo(props.row)"
+                      size="mini"
+                      v-model="props.row.sort"
+                      style="width:60px"
+                      placeholder="请输入内容"></el-input>
+          </template>
+        </el-table-column>
+        <el-table-column width="200"
+                         label="操作">
+          <template slot-scope="props">
+            <el-button type="text"
+                       @click="getQRCode(props.row)">二维码</el-button>
+            <el-button type="text"
+                       @click="infoGoods(props.row,'info')">详情</el-button>
+            <el-button type="text"
+                       @click="infoGoods(props.row, 'edit')">编辑</el-button>
+            <!-- <el-button type="text"
+                       @click="confirmDelete(props.row.id)">删除</el-button> -->
+          </template>
+        </el-table-column>
+      </el-table>
+      <el-pagination background
+                     class="pagination"
+                     @size-change="pageSizeChange"
+                     :page-sizes="[15,30,50,100]"
+                     :page-size="conditionForm.page.pageSize"
+                     :current-page="conditionForm.page.pageNum"
+                     @current-change="pageNoChange"
+                     layout="total, sizes, prev, pager, next, jumper"
+                     :total="conditionForm.page.total" />
+    </section>
+    <el-dialog title="编辑"
+               :visible.sync="itemFormVisible"
+               size="tiny"
+               custom-class="goods-dialog"
+               @close="resetForm">
+      <el-form :model="itemForm"
+               ref="itemForm"
+               label-width="90px"
+               class="account-form"
+               :rules="itemFormRules">
+        <el-form-item label="商品名称"
+                      prop="name">
+          <span>{{itemForm.name}}</span>
+          <!--<el-input v-model.trim="itemForm.name"></el-input>-->
+        </el-form-item>
+        <el-form-item label="商品描述"
+                      prop="description">
+          <el-input v-model.trim="itemForm.description"></el-input>
+        </el-form-item>
+        <el-form-item label="定价"
+                      prop="priceDollar">
+          <el-input v-model.number="itemForm.priceDollar"></el-input>
+        </el-form-item>
+        <el-form-item label="成本"
+                      prop="procurementPriceDollar">
+          <el-input v-model.number="itemForm.procurementPriceDollar"></el-input>
+        </el-form-item>
+        <el-form-item label="运费"
+                      prop="transformFeeDollar">
+          <el-input v-model.number="itemForm.transformFeeDollar"></el-input>
+        </el-form-item>
+        <el-form-item label="可售库存"
+                      prop="canSellSize">
+          <el-input v-model.number="itemForm.canSellSize"></el-input>
+        </el-form-item>
+        <el-form-item label="总库存"
+                      prop="size">
+          <el-input v-model.number="itemForm.size"></el-input>
+        </el-form-item>
+        <el-form-item label="已售"
+                      prop="sellSize">
+          <span>{{itemForm.sellSize}}</span>
+          <!--<el-input v-model.number="itemForm.sellSize"></el-input>-->
+        </el-form-item>
+        <el-button type="primary"
+                   class="lg-btn"
+                   :loading="saving"
+                   @click="updateGoods">保存</el-button>
+      </el-form>
+    </el-dialog>
+    <el-dialog :title="DRname"
+               :visible.sync="QRVisible"
+               width="30%"
+               size="tiny"
+               class="ORstyle"
+               custom-class="goods-dialog">
+      <canvas id="QRCode"></canvas>
+    </el-dialog>
   </div>
 </template>
 <script>
@@ -293,28 +278,6 @@ export default {
           state: '1',
           recommend: '',
         },
-        item: {
-          id: '',
-          grandId: '',
-          typeId: '',
-          storeId: '',
-          price: '',
-          activityId: '',
-          name: '',
-          namePy: '',
-          sellStat: '',
-          canSellSize: '',
-          sellSize: '',
-          size: '',
-          pic1: '',
-          pic2: '',
-          pic3: '',
-          pic4: '',
-          pic5: '',
-          pic6: '',
-          detail: '',
-          createTime: '',
-        },
         page: {
           pageSize: 15,
           pageNum: 1,
@@ -323,24 +286,24 @@ export default {
           sortorder: 'desc',
         },
       },
-      options: [
-        {
-          value: '-1',
-          label: '停售',
-        },
+      saleOptions: [
         {
           value: '1',
           label: '在售',
         },
+        {
+          value: '-1',
+          label: '停售',
+        },
       ],
       recommendOptions: [
         {
-          value: '0',
-          label: '非热销商品',
-        },
-        {
           value: '1',
           label: '热销商品',
+        },
+        {
+          value: '0',
+          label: '非热销商品',
         },
       ],
       sellWell: [
@@ -380,9 +343,9 @@ export default {
   },
 
   computed: {
-    maxTableHeight() {
+    tableHeight() {
       // the max height of table ,depend on what above on the table
-      return document.body.clientHeight - 400
+      return 500
     },
   },
   mounted() {
@@ -454,14 +417,13 @@ export default {
         })
         .catch(() => {})
     },
-    searchData() {
-      this.conditionForm.page = {
-        pageNum: 1,
-        pageSize: 15,
-        total: 0,
-        sortname: 'id',
-        sortorder: 'desc',
-      }
+    search() {
+      // reset pages and query
+      this.conditionForm.page = this.$options.data().conditionForm.page
+      this.getItems()
+    },
+    resetSearch() {
+      this.conditionForm = this.$options.data().conditionForm
       this.getItems()
     },
     infoGoods(good, action) {
@@ -469,7 +431,6 @@ export default {
       sessionStorage.setItem('infoGood', JSON.stringify(good))
       this.$router.push({ path: '/goods/' + action, query: { id: good.id } })
     },
-
     /* item form */
     addItem() {
       this.$router.push('goods/add')
@@ -523,23 +484,6 @@ export default {
               } else {
                 this.$message({ message: '保存失败', type: 'error' })
               }
-              // this.$http
-              //   .ajax({
-              //     url: APIHOST + url,
-              //     contentType: "application/json; charset=utf-8",
-              //     type: "post",
-              //     dataType: "json",
-              //     data: JSON.stringify(updateGoodsForm),
-              //     context: this
-              //   })
-              //   .done(res => {
-              //     if (res.result === 1) {
-              //       this.$message({ message: "保存成功", type: "success" });
-              //       this.itemFormVisible = false;
-              //       this.getItems();
-              //     } else {
-              //       this.$message({ message: "保存失败", type: "error" });
-              //     }
             })
             .fail(() => {
               console.log('目标数据保存接口出错')
@@ -586,21 +530,7 @@ export default {
         } else {
         }
       })
-
-      // this.$http
-      //   .ajax({
-      //     url: APIHOST + "api/goods/deleteByName/" + id,
-      //     type: "get",
-      //     dataType: "json",
-      //     context: this
-      //   })
-      //   .done(res => {
-      //     if (res.result === 1) {
-      //       this.$message({ message: "删除成功", type: "success" });
-      //       this.getItems();
-      //     }
-      //   });
-    } /* table 必备 */,
+    },
     getItems() {
       this.tableLoading = true
       this.$axios.post(globalConfig.server1 + 'api/goods/list', this.conditionForm).then((res) => {

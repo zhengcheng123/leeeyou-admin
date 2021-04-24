@@ -1,209 +1,199 @@
 <template>
-  <div>
-    <div>
-      <div class="crumbs">
-        <el-breadcrumb separator="/">
-          <el-breadcrumb-item>
-            <i class="fa fa-user-circle-o"
-               aria-hidden="true"></i>
-            售后管理
-          </el-breadcrumb-item>
-        </el-breadcrumb>
-      </div>
-      <div class="content">
-        <div class="goods-row clearfix">
-          <div class="row">
-            <el-form :inline="true">
-              <el-form-item label="退款编码："
-                            prop="code">
-                <el-input clearable
-                          v-model.trim="conditionForm.item.code"></el-input>
-              </el-form-item>
-              <el-form-item label="买家："
-                            prop="buyerName">
-                <el-input clearable
-                          v-model.trim="conditionForm.item.buyerName"></el-input>
-              </el-form-item>
-              <el-form-item label="订单号："
-                            prop="orderStoreCode">
-                <el-input clearable
-                          v-model.trim="conditionForm.item.orderStoreCode"></el-input>
-              </el-form-item>
-              <el-form-item label="创建时间：">
-                <el-date-picker class="date-picker"
-                                v-model="conditionForm.item.createTime"
-                                type="daterange"
-                                range-separator="至"
-                                start-placeholder="开始"
-                                end-placeholder="结束"></el-date-picker>
-              </el-form-item>
-              <el-form-item>
-                <el-button type="primary"
-                           @click="searchData"
-                           class="f-left">搜索</el-button>
-              </el-form-item>
-            </el-form>
-          </div>
-        </div>
-        <section class="section"
-                 style="background:#fff">
-          <el-table :data="currentItems"
-                    @selection-change="selectionChange"
-                    border
-                    style="width: 100%"
-                    @sort-change="sortItems"
-                    :max-height="maxTableHeight"
-                    :header-cell-style="{background:'#E8EAEE',height:'48px',}">
-            <el-table-column type="selection"
-                             width="55"></el-table-column>
-            <el-table-column prop="code"
-                             min-width="190"
-                             label="退款编码"
-                             align="center"></el-table-column>
-            <el-table-column prop="orderStoreCode"
-                             label="订单号"
-                             min-width="150"
-                             align="center">
-              <template slot-scope="props">
-                <div class="info-sell"
-                     @click="getForm(props.row.orderStoreId)">{{props.row.orderStoreCode}}</div>
-              </template>
-            </el-table-column>
-            <el-table-column prop="buyerName"
-                             label="买家"
-                             min-width="150"
-                             align="center"></el-table-column>
-            <el-table-column prop="phone"
-                             label="手机号"
-                             min-width="150"
-                             align="center"></el-table-column>
-            <el-table-column prop="goodsName"
-                             label="商品名称"
-                             min-width="150"
-                             align="center"></el-table-column>
-            <el-table-column prop="goodsAttrs"
-                             label="商品规格"
-                             min-width="150"
-                             align="center"></el-table-column>
-            <el-table-column prop="refundType"
-                             min-width="120"
-                             label="售后方式">
-              <template slot-scope="props">
-                <span v-if="props.row.refundType === 1">仅退款</span>
-                <span v-else>退货退款</span>
-              </template>
-            </el-table-column>
-            <el-table-column prop="backMoneyy"
-                             min-width="110"
-                             label="实际退款金额"
-                             align="center">
-              <template scope="props">
-                <span>{{pennyToDollar(props.row.backMoney)}}</span>
-              </template>
-            </el-table-column>
-            <el-table-column prop="reason"
-                             label="退款原因"
-                             min-width="190"
-                             align="center">
-              <template slot-scope="props">
-                <span v-if="props.row.reason === '0'">多拍/错拍/不喜欢/不想要</span>
-                <span v-else-if="props.row.reason === '1'">假货</span>
-                <span v-else-if="props.row.reason === '2'">卖家漏发，错发</span>
-                <span v-else-if="props.row.reason === '3'">款式颜色问题退换货</span>
-                <span v-else-if="props.row.reason === '4'">商品质量问题</span>
-                <span v-else-if="props.row.reason === '5'">其他原因</span>
-              </template>
-            </el-table-column>
-            <el-table-column prop="logisticeCompany"
-                             label="物流公司"
-                             min-width="120"
-                             align="center"></el-table-column>
-            <el-table-column prop="logisticeCode"
-                             label="物流单号"
-                             min-width="150"
-                             align="center"></el-table-column>
-            <el-table-column label="凭证图片"
-                             min-width="260"
-                             align="center">
-              <template scope="props">
-                <div style="display: flex; flex-flow: row wrap;">
-                  <img v-for="i in 5"
-                       :key="i"
-                       v-show="props.row[`pic${i}`]"
-                       :src="$GETIMGHOST + props.row[`pic${i}`]"
-                       style=" margin: 0 5px 5px 0;max-width: 100%; max-height: 80px; border: 1px solid #999999;padding: 3px;"
-                       @click="previewImg($GETIMGHOST + props.row[`pic${i}`])">
-                </div>
-              </template>
-            </el-table-column>
-            <el-table-column prop="refundStat"
-                             label="退款状态"
-                             min-width="120"
-                             align="center">
-              <template slot-scope="props">
-                <span v-if="props.row.refundStat === 1">等待卖家同意</span>
-                <span v-else-if="props.row.refundStat === 2">卖家已同意</span>
-                <span v-else-if="props.row.refundStat === 3">退款关闭</span>
-                <span v-else-if="props.row.refundStat === 4">退款成功</span>
-                <span v-else-if="props.row.refundStat === -1">卖家拒绝协议</span>
-                <span v-else-if="props.row.refundStat === -2">卖家未收到货</span>
-              </template>
-            </el-table-column>
-            <el-table-column prop="createTime"
-                             min-width="190"
-                             label="交易创建时间"
-                             align="center">
-              <template scope="props">
-                <span>{{renderTime(props.row.createTime)}}</span>
-              </template>
-            </el-table-column>
-            <!-- <el-table-column prop="checkTime" label="确认时间" min-width="190" align="center">
+  <div class="wrapper">
+    <div class="search_bar">
+      <el-form :inline="true">
+        <el-form-item label="退款编码"
+                      prop="code">
+          <el-input clearable
+                    size="mini"
+                    placeholder="请输入"
+                    v-model.trim="conditionForm.item.code"></el-input>
+        </el-form-item>
+        <el-form-item label="买家"
+                      prop="buyerName">
+          <el-input clearable
+                    size="mini"
+                    placeholder="请输入"
+                    v-model.trim="conditionForm.item.buyerName"></el-input>
+        </el-form-item>
+        <el-form-item label="订单号"
+                      prop="orderStoreCode">
+          <el-input clearable
+                    size="mini"
+                    placeholder="请输入"
+                    v-model.trim="conditionForm.item.orderStoreCode"></el-input>
+        </el-form-item>
+        <el-form-item label="创建时间">
+          <el-date-picker class="date-picker"
+                          size="mini"
+                          v-model="conditionForm.item.createTime"
+                          type="daterange"
+                          range-separator="至"
+                          start-placeholder="开始"
+                          end-placeholder="结束"></el-date-picker>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary"
+                     size="mini"
+                     @click="searchData">搜 索</el-button>
+        </el-form-item>
+      </el-form>
+    </div>
+    <section>
+      <!-- @selection-change="selectionChange" -->
+      <el-table :data="currentItems"
+                style="width: 100%"
+                @sort-change="sortItems"
+                height="0"
+                :header-cell-style="{background:'var(--background1)'}">
+        <!-- <el-table-column type="selection"
+                         width="55"></el-table-column> -->
+        <el-table-column prop="code"
+                         min-width="190"
+                         label="退款编码"
+                         align="center"></el-table-column>
+        <el-table-column prop="orderStoreCode"
+                         label="订单号"
+                         min-width="150"
+                         align="center">
+          <template slot-scope="props">
+            <div class="info-sell"
+                 @click="getForm(props.row.orderStoreId)">{{props.row.orderStoreCode}}</div>
+          </template>
+        </el-table-column>
+        <el-table-column prop="buyerName"
+                         label="买家"
+                         min-width="150"
+                         align="center"></el-table-column>
+        <el-table-column prop="phone"
+                         label="手机号"
+                         min-width="150"
+                         align="center"></el-table-column>
+        <el-table-column prop="goodsName"
+                         label="商品名称"
+                         min-width="150"
+                         align="center"></el-table-column>
+        <el-table-column prop="goodsAttrs"
+                         label="商品规格"
+                         min-width="150"
+                         align="center"></el-table-column>
+        <el-table-column prop="refundType"
+                         min-width="120"
+                         label="售后方式">
+          <template slot-scope="props">
+            <span v-if="props.row.refundType === 1">仅退款</span>
+            <span v-else>退货退款</span>
+          </template>
+        </el-table-column>
+        <el-table-column prop="backMoneyy"
+                         min-width="110"
+                         label="实际退款金额"
+                         align="center">
+          <template scope="props">
+            <span>{{pennyToDollar(props.row.backMoney)}}</span>
+          </template>
+        </el-table-column>
+        <el-table-column prop="reason"
+                         label="退款原因"
+                         min-width="190"
+                         align="center">
+          <template slot-scope="props">
+            <span v-if="props.row.reason === '0'">多拍/错拍/不喜欢/不想要</span>
+            <span v-else-if="props.row.reason === '1'">假货</span>
+            <span v-else-if="props.row.reason === '2'">卖家漏发，错发</span>
+            <span v-else-if="props.row.reason === '3'">款式颜色问题退换货</span>
+            <span v-else-if="props.row.reason === '4'">商品质量问题</span>
+            <span v-else-if="props.row.reason === '5'">其他原因</span>
+          </template>
+        </el-table-column>
+        <el-table-column prop="logisticeCompany"
+                         label="物流公司"
+                         min-width="120"
+                         align="center"></el-table-column>
+        <el-table-column prop="logisticeCode"
+                         label="物流单号"
+                         min-width="150"
+                         align="center"></el-table-column>
+        <el-table-column label="凭证图片"
+                         min-width="260"
+                         align="center">
+          <template scope="props">
+            <div style="display: flex; flex-flow: row wrap;">
+              <img v-for="i in 5"
+                   :key="i"
+                   v-show="props.row[`pic${i}`]"
+                   :src="$GETIMGHOST + props.row[`pic${i}`]"
+                   style=" margin: 0 5px 5px 0;max-width: 100%; max-height: 80px; border: 1px solid #999999;padding: 3px;"
+                   @click="previewImg($GETIMGHOST + props.row[`pic${i}`])">
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column prop="refundStat"
+                         label="退款状态"
+                         min-width="120"
+                         align="center">
+          <template slot-scope="props">
+            <span v-if="props.row.refundStat === 1">等待卖家同意</span>
+            <span v-else-if="props.row.refundStat === 2">卖家已同意</span>
+            <span v-else-if="props.row.refundStat === 3">退款关闭</span>
+            <span v-else-if="props.row.refundStat === 4">退款成功</span>
+            <span v-else-if="props.row.refundStat === -1">卖家拒绝协议</span>
+            <span v-else-if="props.row.refundStat === -2">卖家未收到货</span>
+          </template>
+        </el-table-column>
+        <el-table-column prop="createTime"
+                         min-width="190"
+                         label="交易创建时间"
+                         align="center">
+          <template scope="props">
+            <span>{{renderTime(props.row.createTime)}}</span>
+          </template>
+        </el-table-column>
+        <!-- <el-table-column prop="checkTime" label="确认时间" min-width="190" align="center">
               <template scope="props">
                 <span>{{renderTime(props.row.checkTime)}}</span>
               </template>
             </el-table-column> -->
-            <el-table-column prop="finishTime"
-                             label="退款完成时间"
-                             min-width="190"
-                             align="center">
-              <template scope="props">
-                <span>{{renderTime(props.row.finishTime)}}</span>
-              </template>
-            </el-table-column>
-            <el-table-column prop="describes"
-                             label="描述"
-                             min-width="150"
-                             align="center"></el-table-column>
-            <el-table-column label="操作"
-                             min-width="260"
-                             align="center">
-              <template scope="props">
-                <div class="btn-group">
-                  <!-- <button class="see-btn" @click="detailRefund(props.row)">详情</button> -->
-                  <el-button class="age-btn"
-                             type="text"
-                             :disabled="props.row.refundStat != 1"
-                             @click="agreeRefund(props.row)">同意</el-button>
-                  <el-button class="age-btn"
-                             type="text"
-                             :disabled="props.row.refundStat != 1"
-                             @click="refuseRefund(props.row)">拒绝</el-button>
-                </div>
-              </template>
-            </el-table-column>
-          </el-table>
-          <el-pagination class="pagination"
-                         @size-change="pageSizeChange"
-                         :page-sizes="[15,30,50,100]"
-                         :page-size="conditionForm.page.pageSize"
-                         :current-page="conditionForm.page.pageNum"
-                         @current-change="pageNoChange"
-                         layout="total, sizes,prev, pager, next, jumper"
-                         :total="conditionForm.page.total"></el-pagination>
-        </section>
-      </div>
-    </div>
-
+        <el-table-column prop="finishTime"
+                         label="退款完成时间"
+                         min-width="190"
+                         align="center">
+          <template scope="props">
+            <span>{{renderTime(props.row.finishTime)}}</span>
+          </template>
+        </el-table-column>
+        <el-table-column prop="describes"
+                         label="描述"
+                         min-width="150"
+                         align="center"></el-table-column>
+        <el-table-column label="操作"
+                         min-width="260"
+                         align="center">
+          <template scope="props">
+            <div class="btn-group">
+              <!-- <button class="see-btn" @click="detailRefund(props.row)">详情</button> -->
+              <el-button class="age-btn"
+                         type="text"
+                         :disabled="props.row.refundStat != 1"
+                         @click="agreeRefund(props.row)">同意</el-button>
+              <el-button class="age-btn"
+                         type="text"
+                         :disabled="props.row.refundStat != 1"
+                         @click="refuseRefund(props.row)">拒绝</el-button>
+            </div>
+          </template>
+        </el-table-column>
+      </el-table>
+      <el-pagination background
+                     class="pagination"
+                     @size-change="pageSizeChange"
+                     :page-sizes="[15,30,50,100]"
+                     :page-size="conditionForm.page.pageSize"
+                     :current-page="conditionForm.page.pageNum"
+                     @current-change="pageNoChange"
+                     layout="total, sizes,prev, pager, next, jumper"
+                     :total="conditionForm.page.total"></el-pagination>
+    </section>
     <el-dialog title="预览"
                width="500px"
                :visible.sync="imgVisible">
@@ -340,13 +330,9 @@ export default {
           code: this.conditionForm.item.code,
           orderStoreCode: this.conditionForm.item.orderStoreCode,
           buyerName: this.conditionForm.item.buyerName,
-          startTime: this.conditionForm.item.createTime
-            ? this.getTime(this.conditionForm.item.createTime[0] / 1000)
-            : '',
+          startTime: this.conditionForm.item.createTime ? this.getTime(this.conditionForm.item.createTime[0] / 1000) : '',
           endTime: this.conditionForm.item.createTime
-            ? this.getTime(
-                this.conditionForm.item.createTime[1].toString().substring(0, 16) + '23:59:59 GMT+0800 (中国标准时间)'
-              ) / 1000
+            ? this.getTime(this.conditionForm.item.createTime[1].toString().substring(0, 16) + '23:59:59 GMT+0800 (中国标准时间)') / 1000
             : '',
         },
         page: this.conditionForm.page,

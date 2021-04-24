@@ -1,56 +1,57 @@
-<template>  
-  <div >  
-  
-    <label v-for="(navMenu,index) in navMenus" :key="index">
-        <el-submenu v-if="navMenu.children&&navMenu.children.length>0" :index="navMenu.id">  
-            <template slot="title" >  
-                <i style="width:15px;height:15px;" :class="navMenu.icon"></i>
-                <span  slot="title">{{navMenu.name}}</span>  
-            </template>  
-            <el-menu-item-group>
-                <NavMenu :navMenus="navMenu.children"></NavMenu>  
-            </el-menu-item-group>
-        </el-submenu> 
-        
-        <el-menu-item v-else :key="navMenu.id" :index="navMenu.id"  :route="navMenu.path" >  
-            <i style="width:15px;height:15px;"  :class="navMenu.icon"></i>
-            <span slot="title">{{navMenu.label}}</span>  
-        </el-menu-item>  
-  
-       
-    </label>  
-  
-  </div>  
+<template>
+  <div>
+    <label v-for="(navMenu,index) in navMenus"
+           :key="index">
+      <el-submenu v-if="navMenu.children&&navMenu.children.length>0"
+                  :index="navMenu.id">
+        <template slot="title">
+          <i style="width:15px;height:15px;"
+             :class="navMenu.icon"></i>
+          <span slot="title">{{navMenu.name}}</span>
+        </template>
+        <el-menu-item-group>
+          <NavMenu :navMenus="navMenu.children"></NavMenu>
+        </el-menu-item-group>
+      </el-submenu>
+      <el-menu-item v-else
+                    :key="navMenu.id"
+                    :index="navMenu.id"
+                    :route="navMenu.path">
+        <i style="width:15px;height:15px;"
+           :class="navMenu.icon"></i>
+        <span slot="title">{{navMenu.label}}</span>
+      </el-menu-item>
+    </label>
+
+  </div>
 </template>  
 
-<script>  
-  export default {  
-    name: 'NavMenu',  
-    props: ['navMenus'],  
-    data() {  
-      return {}  
-    },  
-    methods: {
-      
-    }  
-  }  
+<script>
+export default {
+  name: 'NavMenu',
+  props: ['navMenus'],
+  data() {
+    return {}
+  },
+  methods: {},
+}
 </script>  
   
-<style scoped>  
+<style scoped>
 .el-menu {
   height: 100%;
-  background-color: #eb8600!important;
-  margin-top:30px;
+  background-color: #eb8600 !important;
+  margin-top: 30px;
 }
 .el-menu-item {
-      color: #fff;
-    font-size: 16px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    -webkit-box-align: center;
-    padding-left: 0px!important;
-    height: 80px;
+  color: #fff;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  -webkit-box-align: center;
+  padding-left: 0px !important;
+  height: 80px;
 }
 
 .el-menu-item i {
@@ -78,23 +79,13 @@
   margin: 0 auto;
   margin-top: 25px;
 }
-.aside-img {
-  background: url("../../assets/bg-logo.png");
-  background-size: 100% 100%;
-  width: 91px;
-  height: 51px;
-  margin: 0 auto;
-}
-.aside-add {
-  margin-top: 22px;
-}
+
 .aside-title {
   width: 200px;
   height: 10px;
-  background: url("../../assets/eg.png");
+  background: url('../../assets/eg.png');
   background-size: 100% 100%;
   margin: 0 auto;
   margin-top: 8px;
 }
-
 </style>

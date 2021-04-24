@@ -53,7 +53,7 @@
               <el-input
                 v-else
                 class="sm-input"
-                size="small"
+                size="mini"
                 v-model.trim="scope.row.canSellSize"
                 name="myInput"
                 required
@@ -72,7 +72,7 @@
               <el-input
                 v-else
                 class="sm-input"
-                size="small"
+                size="mini"
                 v-model.trim="scope.row.size"
                 required
                 @input="numInput2(scope.row)"
@@ -90,7 +90,7 @@
               <el-input
                 v-else
                 class="sm-input"
-                size="small"
+                size="mini"
                 v-model.trim="scope.row.priceLabel"
                 required
                 @input="checknum(scope.row)"
@@ -108,7 +108,7 @@
               <el-input
                 v-else
                 class="sm-input"
-                size="small"
+                size="mini"
                 v-model.trim="scope.row.procurementPrice"
                 required
                 @input="checknum2(scope.row)"

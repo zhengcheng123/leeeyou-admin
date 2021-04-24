@@ -7,6 +7,7 @@ export default new Router({
   routes: [
     {
       path: "/",
+      name: "首页",
       component: resolve => import("@/components/common/Login")
     },
 
@@ -20,22 +21,27 @@ export default new Router({
       children: [
         {
           path: "/api/goods",
+          name: "商品管理",
           component: resolve => import("@/components/module/goods")
         },
         {
           path: "/api/goods/add",
+          name: "添加商品",
           component: resolve => import("@/components/module/goodsForm")
         },
         {
           path: "/goods/info",
+          name: "商品详情",
           component: resolve => import("@/components/module/goodsInfo")
         },
         {
           path: "/goods/edit",
+          name: "编辑商品",
           component: resolve => import("@/components/module/goodsInfo")
         },
         {
           path: "/store",
+          name: "我的店铺",
           component: resolve => import("@/components/module/store")
         },
         {
@@ -44,6 +50,7 @@ export default new Router({
         },
         {
           path: "/api/trade",
+          name: "交易管理",
           component: resolve => import("@/components/module/trade")
         },
         {
@@ -52,30 +59,39 @@ export default new Router({
         },
         {
           path: "/api/afterSell",
+          name: "售后管理",
+
           component: resolve => import("@/components/module/afterSell")
         },
         {
           path: "/usersManage",
+          name: "用户管理",
           component: resolve =>
             import("../components/module/setting/userManger")
         },
         {
           path: "/roleManage",
+          name: "角色管理",
           component: resolve =>
             import("../components/module/setting/roleManage")
         },
         {
           path: "/systemVersion",
+          name: "系统版本",
+
           component: resolve =>
             import("../components/module/setting/systemVersion")
         },
         {
           path: "/menuManage",
+          name: "菜单管理",
           component: resolve =>
             import("../components/module/setting/menuManage")
         },
         {
           path: "/traceLog",
+          name: "日志管理",
+
           component: resolve => import("../components/module/setting/logManage")
         },
         {
@@ -88,6 +104,7 @@ export default new Router({
         },
         {
           path: "/postage",
+          name: "运费管理",
           component: resolve => import("@/components/module/setStore")
         },
         {
@@ -106,6 +123,12 @@ export default new Router({
         {
           path: "/editCounpon",
           component: resolve => import("@/components/module/editCounpon")
+        },
+
+        {
+          path: "/coupon",
+          name: "营销管理",
+          component: resolve => import("@/components/module/coupon/list")
         }
       ]
     }

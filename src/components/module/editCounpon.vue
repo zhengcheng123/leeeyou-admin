@@ -10,13 +10,13 @@
           </el-select>
         </el-form-item>
         <el-form-item label="优惠券名称：" prop="name" label-width="150px">
-          <el-input v-model="couponPassForm.name" size="small"></el-input>
+          <el-input v-model="couponPassForm.name" size="mini"></el-input>
         </el-form-item>
         <el-form-item label="总发放量：" prop="count" label-width="150px">
-          <el-input size="small" v-model="couponPassForm.count" @keyup.native="inputChange(couponPassForm.count,'count')"></el-input>
+          <el-input size="mini" v-model="couponPassForm.count" @keyup.native="inputChange(couponPassForm.count,'count')"></el-input>
         </el-form-item>
         <el-form-item label="面额：" prop="discountQuota" label-width="150px">
-          <el-input size="small" v-model="couponPassForm.discountQuota" @keyup.native="inputChange(couponPassForm.discountQuota,'discountQuota')">
+          <el-input size="mini" v-model="couponPassForm.discountQuota" @keyup.native="inputChange(couponPassForm.discountQuota,'discountQuota')">
             <template slot="append">元</template>
           </el-input>
         </el-form-item>
