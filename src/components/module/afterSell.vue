@@ -42,7 +42,6 @@
     <section>
       <!-- @selection-change="selectionChange" -->
       <el-table :data="currentItems"
-                style="width: 100%"
                 @sort-change="sortItems"
                 height="0"
                 :header-cell-style="{background:'var(--background1)'}">

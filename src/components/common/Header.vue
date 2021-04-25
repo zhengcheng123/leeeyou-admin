@@ -20,7 +20,7 @@
       <div @click="logout">
         <i class="fa fa-sign-out"
            aria-hidden="true"></i>
-        <span>退出</span>
+        <span>注销</span>
       </div>
     </div>
     <el-dialog width="400px"

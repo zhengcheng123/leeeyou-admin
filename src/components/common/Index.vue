@@ -1,19 +1,15 @@
 <template>
   <div class="index">
-    <v-header class="header" />
+    <Header class="header" />
     <aside class="aside">
       <div class="aside-top">
-        <h3 class="aside-header">乐有商城</h3>
+        <img src="../../assets/logo.png"
+             alt="">
+        <h3>乐有商城管理平台{{activeRouter}}</h3>
       </div>
-      <el-menu default-active="0"
-               background-color="#1D3557"
-               active-text-color="var(--primary)"
-               unique-opened
-               router>
-        <el-scrollbar>
-          <v-NavMenu :navMenus="menuList"></v-NavMenu>
-        </el-scrollbar>
-      </el-menu>
+      <el-scrollbar>
+        <Aside :navMenus="menuList"></Aside>
+      </el-scrollbar>
     </aside>
     <div class="container"
          ref="container">
@@ -23,13 +19,14 @@
     </div>
   </div>
 </template>
+
 <script>
-import vNavMenu from './Aside'
-import vHeader from './Header'
+import Header from './Header'
+import Aside from './Aside'
 
 export default {
   name: 'Index',
-  components: { vHeader, vNavMenu },
+  components: { Header, Aside },
   data() {
     return {
       menuList: [],
@@ -38,19 +35,10 @@ export default {
   mounted() {
     this.getMenu()
   },
+
   methods: {
     async getMenu() {
       this.menuList = JSON.parse(sessionStorage.getItem('personal'))
-      // await  this.$axios
-      //   .get(globalConfig.server1 + "menu-resource/select-menu")
-      //   .then(res => {
-      //     if (res.data.code === 200) {
-
-      //       this.menuList = res.data.data.children;
-      //     } else {
-      //       this.$message.error(res.data.message);
-      //     }
-      //   });
     },
   },
 }
@@ -67,10 +55,10 @@ export default {
   top: 0;
   right: 0;
   height: 50px;
-  width: calc(100vw - 200px);
+  width: calc(100vw - var(--nav-width));
   color: var(--title3);
   background-color: var(--white);
-  z-index: 200;
+  z-index: 999;
 }
 
 .aside {
@@ -79,74 +67,27 @@ export default {
   top: 0;
   left: 0;
   bottom: 0;
+  background-color: #003459;
 
-  .aside-header {
-    width: 200px;
-    color: var(--white);
-    font-size: var(--font-huge);
+  .aside-top {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
     background-color: #1d3557;
-    font-weight: bold;
-    line-height: 50px;
-    margin: 0;
-    text-align: center;
-  }
+    padding-left: 20px;
+    margin-bottom: 5px;
 
-  /deep/ .el-menu {
-    color: #e8eaee;
-    overflow-y: scroll !important;
-    border: none !important;
-    height: calc(100vh - 50px);
-    width: 200px;
-
-    &::-webkit-scrollbar {
-      display: none;
+    img {
+      width: 24px;
     }
 
-    .el-scrollbar {
-      height: 100%;
-    }
-
-    .el-scrollbar__wrap {
-      height: 100%;
-    }
-
-    .el-submenu .el-menu-item {
+    h3 {
       color: var(--white);
-      color: #fff;
-      font-size: 14px;
-    }
-
-    .el-submenu__title {
-      color: var(--white);
-      font-size: 15px;
-      text-align: center;
+      font-size: var(--font-large);
+      font-weight: bold;
       line-height: 50px;
-
-      // &:hover {
-      //   color: var(--white);
-      //   background-color: var(--primary-light);
-      // }
-
-      i {
-        color: var(--white);
-        display: block;
-      }
-    }
-
-    .el-menu-item {
-      color: #ffffff !important;
-      font-size: 15px;
-      text-align: center;
-
-      &:hover {
-        color: var(--white);
-        background-color: var(--primary-light);
-      }
-
-      &.is-active {
-        color: var(--white);
-        background-color: var(--primary-light);
-      }
+      margin: 0;
+      padding-left: 5px;
     }
   }
 }

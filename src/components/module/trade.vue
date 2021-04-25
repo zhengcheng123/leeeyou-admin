@@ -29,14 +29,17 @@
                        :value="item.value"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item>
-          <el-button type="primary"
-                     size="mini"
-                     @click="search">搜 索</el-button>
-          <el-button size="mini"
-                     @click="reset">重 置</el-button>
-        </el-form-item>
       </el-form>
+      <div class="right">
+        <el-button size="mini"
+                   type="primary"
+                   icon="el-icon-search"
+                   @click="search">搜索</el-button>
+        <el-button size="mini"
+                   icon="el-icon-refresh-right"
+                   @click="resetSearch">重置</el-button>
+
+      </div>
     </div>
     <!--<el-button icon="plus" size="mini" @click="addItem" class="f-left">新增</el-button>-->
     <!--<el-button icon="delete" size="mini" plain type="danger" @click="confirmDelete()"-->
@@ -60,102 +63,91 @@
       </div>
       <el-table :data="currentItems"
                 @selection-change="selectionChange"
-                style="width: 100%"
                 @sort-change="sortItems"
                 height="0"
                 :header-cell-style="{background:'var(--background1)'}">
-        <el-table-column type="selection"
+        <!-- <el-table-column type="selection"
                          width="55"
-                         align="center"></el-table-column>
+                         align="center"></el-table-column> -->
         <el-table-column prop="code"
-                         min-width="190"
-                         label="订单号"
-                         align="center"></el-table-column>
+                         width="180"
+                         fixed="left"
+                         label="订单号"></el-table-column>
         <el-table-column prop="payment"
-                         min-width="120"
+                         width="120"
                          label="实际付款"
-                         sortable
-                         align="center">
+                         sortable>
           <template slot-scope="props">{{pennyToDollar(props.row.payment)}}</template>
         </el-table-column>
         <!-- <el-table-column prop="paycode" label="支付交易编号" align="center"></el-table-column> -->
         <el-table-column prop="buyerName"
-                         min-width="120"
-                         label="客户"
-                         align="center"></el-table-column>
+                         width="120"
+                         label="客户"></el-table-column>
         <!--<el-table-column prop="shopping_addr" label="收货地址id" sortable></el-table-column>-->
         <!--<el-table-column prop="stat" label="交易状态" sortable align="center"></el-table-column>-->
         <el-table-column prop="comment"
-                         min-width="120"
-                         label="买家备注"
-                         align="center"></el-table-column>
+                         width="120"
+                         label="买家备注"></el-table-column>
         <el-table-column label="配送方式"
-                         min-width="120"
-                         align="center">
+                         width="80">
           <template slot-scope="props">
-            <span v-if="props.row.logisticsType === 1">快递</span>
-            <span v-if="props.row.logisticsType === 2">自提</span>
+            <span v-if="props.row.logisticsType === 1"
+                  :style="{color: 'green'}">快递</span>
+            <span v-if="props.row.logisticsType === 2"
+                  :style="{color: 'blue'}">自提</span>
             <span v-if="props.row.logisticsType === 3">无物流</span>
           </template>
         </el-table-column>
         <el-table-column prop="freight"
-                         min-width="120"
+                         width="80"
                          label="运费"
                          sortable>
           <template slot-scope="props">{{pennyToDollar(props.row.freight)}}</template>
         </el-table-column>
         <el-table-column prop="stat"
-                         min-width="120"
+                         width="80"
                          label="状态"
-                         sortable
-                         align="center">
+                         sortable>
           <template slot-scope="props">{{renderStateLabel(states, props.row.stat)}}</template>
         </el-table-column>
         <el-table-column prop="createTime"
-                         min-width="190"
+                         width="190"
                          label="创建时间"
-                         sortable
-                         align="center">
+                         sortable>
           <template slot-scope="props">{{renderTime(props.row.createTime)}}</template>
         </el-table-column>
         <el-table-column prop="payTime"
-                         min-width="190"
+                         width="190"
                          label="付款时间"
-                         sortable
-                         align="center">
+                         sortable>
           <template slot-scope="props">{{renderTime(props.row.payTime)}}</template>
         </el-table-column>
         <el-table-column prop="sendTime"
-                         min-width="190"
+                         width="190"
                          label="发货时间"
-                         sortable
-                         align="center">
+                         sortable>
           <template slot-scope="props">{{renderTime(props.row.sendTime)}}</template>
         </el-table-column>
         <el-table-column prop="finishTime"
-                         min-width="190"
+                         width="190"
                          label="成交时间"
-                         sortable
-                         align="center">
+                         sortable>
           <template slot-scope="props">{{renderTime(props.row.finishTime)}}</template>
         </el-table-column>
         <el-table-column label="操作"
-                         min-width="190"
-                         align="center">
+                         fixed="right"
+                         width="120">
           <template scope="props">
             <div class="btn-group">
-              <el-button class="btn-delive"
-                         v-if="props.row.logisticsType===1"
+              <el-button v-if="props.row.logisticsType===1"
                          type="text"
                          :disabled="props.row.stat!==2"
                          @click="sendGoods(props.row)">发货</el-button>
-              <el-button class="btn-delive"
-                         v-if="props.row.logisticsType===2"
+              <el-button v-if="props.row.logisticsType===2"
                          type="text"
                          :disabled="props.row.stat!==2"
                          @click="writeOff(props.row)">核销</el-button>
-              <el-button class="btn-delive"
-                         type="text"
+              <el-button type="text"
                          @click="tradeDetail(props.row.id)">详情</el-button>
             </div>
           </template>
@@ -312,7 +304,10 @@ export default {
       }
       this.getItems()
     },
-    reset() {},
+    resetSearch() {
+      this.conditionForm = this.$options.data().conditionForm
+      this.getItems()
+    },
     getLogisticsCompany() {
       this.$http
         .ajax({

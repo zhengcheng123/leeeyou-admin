@@ -1,45 +1,111 @@
 <template>
   <div>
-    <label v-for="(navMenu,index) in navMenus"
-           :key="index">
-      <el-submenu v-if="navMenu.children&&navMenu.children.length>0"
-                  :index="navMenu.id">
-        <template slot="title">
-          <!-- <i style="width:15px;height:15px;"
-             :class="navMenu.icon"></i> -->
-          <span slot="title">{{navMenu.name}}</span>
-        </template>
-        <el-menu-item-group>
-          <Aside :navMenus="navMenu.children"></Aside>
-        </el-menu-item-group>
-      </el-submenu>
-      <el-menu-item v-else
-                    :key="navMenu.id"
-                    :index="navMenu.id"
-                    :route="navMenu.path">
-        <!-- <i style="width:15px;height:15px;"
-           :class="navMenu.icon"></i> -->
-        <span slot="title">{{navMenu.name}}</span>
-      </el-menu-item>
+    <el-menu :default-active="activeRouter"
+             background-color="#003459"
+             active-text-color="var(--primary)"
+             unique-opened
+             router>
+      <div v-for="items in navMenus"
+           :key="items.id">
+        <el-submenu v-if="items.children.length"
+                    :index="items.path">
+          <template slot="title"><i class="el-icon-menu"></i>{{items.name}}</template>
+          <el-menu-item v-for="subItems in items.children"
+                        :key="subItems.id"
+                        :index="subItems.path">{{subItems.name}}</el-menu-item>
+        </el-submenu>
+        <el-menu-item v-if="!items.children.length"
+                      :index="items.path">
+          <i class="el-icon-menu"></i>
+          <span slot="title">{{items.name}}</span>
+        </el-menu-item>
+      </div>
 
-    </label>
+    </el-menu>
 
   </div>
 </template>
+
 <script>
 export default {
+  name: 'Aside',
+  props: ['navMenus'],
   data() {
     return {
       accessUrl: '',
       subMenuUrl: '',
     }
   },
-  props: ['navMenus'],
-  name: 'Aside',
-  methods: {
-    chackFirst() {
-      console.log(111)
+  computed: {
+    activeRouter() {
+      return this.$route.path
     },
   },
 }
 </script>
+
+<style lang="scss" scoped>
+/deep/ .el-menu {
+  color: #bfbfc0;
+  overflow-y: scroll !important;
+  border: none !important;
+  width: var(--nav-width);
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  .el-scrollbar {
+    height: 100%;
+  }
+
+  .el-scrollbar__wrap {
+    height: 100%;
+  }
+
+  .el-menu-item {
+    color: #bfbfc0;
+    height: 40px;
+    line-height: 40px;
+    margin-bottom: 10px;
+    font-size: 15px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+    &:hover {
+      color: var(--white);
+      background-color: var(--primary-light);
+    }
+
+    &.is-active {
+      color: var(--white) !important;
+      background-color: var(--primary) !important;
+      background-color: var(--primary-light);
+      font-weight: 500;
+    }
+  }
+
+  .el-submenu__title {
+    color: #bfbfc0;
+    height: 40px;
+    line-height: 40px;
+    margin-bottom: 10px;
+    font-size: 15px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+    &:hover {
+      color: var(--white);
+    }
+  }
+
+  .el-menu--inline {
+    .el-menu-item {
+      font-size: 14px;
+      padding-left: 49px !important;
+    }
+  }
+}
+</style>
