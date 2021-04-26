@@ -1,49 +1,33 @@
 <template>
   <div class="wrapper">
     <div class="search_bar">
-      <!-- <div class="row"> -->
-      <!--<el-button icon="el-icon-delete" size="mini" plain type="danger" @click="confirmDelete()"-->
-      <!--class="f-left">删除-->
-      <!--</el-button>-->
-      <!-- </div> -->
       <el-form :inline="true">
-        <el-form-item label="商品名称"
+        <el-form-item label="优惠券名称"
                       prop="name">
           <el-input clearable
                     size="mini"
                     placeholder="请输入"
                     v-model.trim="conditionForm.condition.name"></el-input>
         </el-form-item>
-        <el-form-item label="销售状态"
+        <el-form-item label="优惠券类型"
+                      prop="category">
+          <el-select clearable
+                     size="mini"
+                     v-model="conditionForm.condition.category">
+            <el-option v-for="item in categoryOptions"
+                       :key="item.value"
+                       :label="item.name"
+                       :value="item.value" />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="状态"
                       prop="state">
           <el-select size="mini"
                      v-model="conditionForm.condition.state">
-            <el-option v-for="item in saleOptions"
+            <el-option v-for="item in stateOptions"
                        :key="item.value"
-                       :label="item.label"
-                       :value="item.value"></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="商品类型"
-                      prop="type">
-          <el-select clearable
-                     size="mini"
-                     v-model="conditionForm.condition.type">
-            <el-option v-for="item in states"
-                       :key="item.id"
-                       :label="item.typeName"
-                       :value="item.id"></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="热销商品"
-                      prop="state">
-          <el-select clearable
-                     size="mini"
-                     v-model="conditionForm.condition.recommend">
-            <el-option v-for="item in recommendOptions"
-                       :key="item.value"
-                       :label="item.label"
-                       :value="item.value"></el-option>
+                       :label="item.name"
+                       :value="item.value" />
           </el-select>
         </el-form-item>
       </el-form>
@@ -60,51 +44,33 @@
     </div>
     <section v-loading="tableLoading">
       <div class="operate_bar">
-        <!-- <el-button size="mini" @click="confirmBan" class="f-left">下架</el-button>
-          <el-button size="mini" @click="confirmPut" class="f-left">上架</el-button>-->
         <div class="left">
           <el-button size="mini"
-                     @click="addItem">添加商品</el-button>
+                     @click="addItem">新增</el-button>
         </div>
-
       </div>
-      <!-- @selection-change="selectionChange" -->
-      <!-- :height="tableHeight" -->
-
-      <el-table :data="currentItems"
+      <el-table :data="tableData"
                 @sort-change="sortItems"
                 height="0"
                 :header-cell-style="{background:'var(--background1)'}">
-        <!-- <el-table-column 
-                           type="selection"
-                           width="55"></el-table-column> -->
         <el-table-column width="80"
                          prop="typeName"
-                         label="类型"></el-table-column>
+                         label="编号"></el-table-column>
         <el-table-column min-width="120"
                          prop="name"
-                         label="名称"></el-table-column>
+                         label="优惠券名称"></el-table-column>
         <el-table-column width="80"
                          prop="canSellSize"
-                         label="库存"></el-table-column>
+                         label="优惠券类型"></el-table-column>
         <el-table-column width="80"
                          prop="sellSize"
-                         label="销量"></el-table-column>
-        <!-- <el-table-column  min-width="120" prop="maxPrice" label="最高价"></el-table-column>
-          <el-table-column  min-width="120" prop="minPrice" label="最低价"></el-table-column>-->
-
+                         label="可使用商品"></el-table-column>
         <el-table-column min-width="200"
                          prop="description"
-                         label="商品描述"></el-table-column>
-        <!-- <el-table-column  min-width="110" prop="sellStat" label="销售状态">
-            <template slot-scope="props">
-              <span v-if="props.row.sellStat != -1">在售</span>
-              <span v-else>停售</span>
-            </template>
-          </el-table-column>-->
+                         label="使用门槛"></el-table-column>
         <el-table-column width="160"
                          prop="sellStat"
-                         label="销售状态">
+                         label="面额">
           <template slot-scope="props">
             <el-switch v-model="props.row.sellStat"
                        size="mini"
@@ -115,41 +81,37 @@
                        @change="updateSwitch($event, props.row)"></el-switch>
           </template>
         </el-table-column>
-        <el-table-column width="120"
-                         sortable
-                         prop="enable"
-                         label="热销商品">
-          <template slot-scope="props">
-            <el-switch :disabled="props.row.sellStat!=1"
-                       size="mini"
-                       v-model="props.row.recommend"
-                       active-value="1"
-                       inactive-value="0"
-                       @change="goodsSwitch($event, props.row)"></el-switch>
-          </template>
-        </el-table-column>
-        <el-table-column width="120"
-                         sortable
-                         label="排序">
-          <template slot-scope="props">
-            <el-input @keyup.native="sortInfo(props.row)"
-                      size="mini"
-                      v-model="props.row.sort"
-                      style="width:60px"
-                      placeholder="请输入内容"></el-input>
-          </template>
-        </el-table-column>
+        <el-table-column min-width="200"
+                         prop="description"
+                         label="发放时间"></el-table-column>
+        <el-table-column min-width="200"
+                         prop="description"
+                         label="券有效期"></el-table-column>
+        <el-table-column min-width="200"
+                         prop="description"
+                         label="状态"></el-table-column>
+
+        <el-table-column min-width="200"
+                         prop="description"
+                         label="已发放数量"></el-table-column>
+
+        <el-table-column min-width="200"
+                         prop="description"
+                         label="已使用数量"></el-table-column>
+
+        <el-table-column min-width="200"
+                         prop="description"
+                         label="剩余数量"></el-table-column>
+        <el-table-column min-width="200"
+                         prop="description"
+                         label="启用"></el-table-column>
         <el-table-column width="200"
                          label="操作">
           <template slot-scope="props">
             <el-button type="text"
-                       @click="getQRCode(props.row)">二维码</el-button>
-            <el-button type="text"
                        @click="infoGoods(props.row,'info')">详情</el-button>
             <el-button type="text"
                        @click="infoGoods(props.row, 'edit')">编辑</el-button>
-            <!-- <el-button type="text"
-                       @click="confirmDelete(props.row.id)">删除</el-button> -->
           </template>
         </el-table-column>
       </el-table>
@@ -205,7 +167,6 @@
         <el-form-item label="已售"
                       prop="sellSize">
           <span>{{itemForm.sellSize}}</span>
-          <!--<el-input v-model.number="itemForm.sellSize"></el-input>-->
         </el-form-item>
         <el-button type="primary"
                    class="lg-btn"
@@ -213,29 +174,71 @@
                    @click="updateGoods">保存</el-button>
       </el-form>
     </el-dialog>
-    <el-dialog :title="DRname"
-               :visible.sync="QRVisible"
-               width="30%"
-               size="tiny"
-               class="ORstyle"
-               custom-class="goods-dialog">
-      <canvas id="QRCode"></canvas>
-    </el-dialog>
   </div>
 </template>
 <script>
-import QRCode from 'qrcode'
 export default {
   data() {
     return {
-      pagedata: '',
-      sellStat1: '',
+      categoryOptions: [
+        {
+          value: '1',
+          name: '购物赠券',
+        },
+        {
+          value: '2',
+          name: '全场赠券',
+        },
+        {
+          value: '3',
+          name: '注册赠券',
+        },
+        {
+          value: '4',
+          name: '指定用户赠券',
+        },
+      ],
+      stateOptions: [
+        {
+          value: '2',
+          name: '分发中',
+        },
+        {
+          value: '3',
+          name: '已结束',
+        },
+        {
+          value: '1',
+          name: '未启用',
+        },
+        {
+          value: '4',
+          name: '已发完',
+        },
+      ],
+      conditionForm: {
+        condition: {
+          name: '',
+          category: '',
+          state: '',
+
+          available: '',
+          expired: '1',
+          finished: '',
+          storeId: '',
+        },
+        page: {
+          pageSize: 15,
+          pageNum: 1,
+          total: 0,
+          sortname: 'id',
+          sortorder: 'desc',
+        },
+      },
+
       sellStat: 1,
       recommend: '',
       tableLoading: false,
-      DRname: '',
-      QRCodeMsg: '',
-      QRVisible: false,
       itemForm: {
         goodsCommonId: -1,
         price: null,
@@ -268,156 +271,16 @@ export default {
         ],
       },
       /* table */
-      currentItems: [],
+      tableData: [],
       selectedItems: [],
-      conditionForm: {
-        condition: {
-          name: '',
-          type: null,
-          state: '1',
-          recommend: '',
-        },
-        page: {
-          pageSize: 15,
-          pageNum: 1,
-          total: 0,
-          sortname: 'id',
-          sortorder: 'desc',
-        },
-      },
-      saleOptions: [
-        {
-          value: '1',
-          label: '在售',
-        },
-        {
-          value: '-1',
-          label: '停售',
-        },
-      ],
-      recommendOptions: [
-        {
-          value: '1',
-          label: '热销商品',
-        },
-        {
-          value: '0',
-          label: '非热销商品',
-        },
-      ],
-      sellWell: [
-        {
-          sort: 1,
-          label: '1',
-        },
-        {
-          sort: 2,
-          label: '2',
-        },
-        {
-          sort: 3,
-          label: '3',
-        },
-        {
-          sort: 4,
-          label: '4',
-        },
-        {
-          sort: 5,
-          label: '5',
-        },
-        {
-          sort: 6,
-          label: '6',
-        },
-        {
-          sort: 10,
-          label: '取消热销',
-        },
-      ],
-      radioSell: '',
-      sortValue: '',
       states: [],
     }
   },
-
-  computed: {
-    tableHeight() {
-      // the max height of table ,depend on what above on the table
-      return 500
-    },
-  },
   mounted() {
     this.getItems()
-    this.getCommonTypes()
-  },
-  watch: {
-    // 通过监听获取数据
-    QRCodeMsg(val) {
-      // 获取页面的canvas
-      var msg = document.getElementById('QRCode')
-      // 将获取到的数据（val）画到msg（canvas）上
-      QRCode.toCanvas(msg, val, function (error) {
-        console.log(error)
-      })
-    },
   },
   methods: {
-    getQRCode(row) {
-      this.QRVisible = true
-      this.DRname = row.name + '(右击图片另存为)'
-      this.$nextTick(() => {
-        // this.QRCodeMsg = "http://tom.zhengcheng.club/tom/#/item/" + row.id;
-        this.QRCodeMsg = 'http://www.leeeyou.com/item/' + row.id
-      })
-    },
-
-    pennyToDollar(penny) {
-      return penny / 100
-    },
-    confirmBan() {
-      if (!this.selectedItems.length) {
-        // 没有勾选
-        this.$message({ message: '请至少选择一项', type: 'info' })
-        return false
-      }
-      this.$confirm('确认下架选择的商品吗？', '确认', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning',
-      })
-        .then(() => {
-          this.ban(
-            this.selectedItems.map((ele) => {
-              return ele.id
-            })
-          )
-        })
-        .catch(() => {})
-    },
-
-    confirmPut() {
-      if (!this.selectedItems.length) {
-        // 没有勾选
-        this.$message({ message: '请至少选择一项', type: 'info' })
-        return false
-      }
-      this.$confirm('确认上架选择的商品吗？', '确认', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'info',
-      })
-        .then(() => {
-          this.put(
-            this.selectedItems.map((ele) => {
-              return ele.id
-            })
-          )
-        })
-        .catch(() => {})
-    },
     search() {
-      // reset pages and query
       this.conditionForm.page = this.$options.data().conditionForm.page
       this.getItems()
     },
@@ -425,6 +288,7 @@ export default {
       this.conditionForm = this.$options.data().conditionForm
       this.getItems()
     },
+
     infoGoods(good, action) {
       sessionStorage.removeItem('infoGood')
       sessionStorage.setItem('infoGood', JSON.stringify(good))
@@ -495,41 +359,7 @@ export default {
         }
       })
     },
-    confirmDelete(ids = 0) {
-      let confirmText = '删除此项目吗？'
-      if (!ids) {
-        // 勾选操作
-        confirmText = '确定删除选中的项目吗？'
-        ids = this.selectedItems.map((ele) => {
-          return ele.id
-        })
-        if (!ids.length) {
-          // 没有勾选
-          this.$message({ message: '请至少选择一项', type: 'info' })
-          return false
-        } else {
-          ids = ids.join(',')
-        }
-      }
-      this.$confirm(confirmText, '确认', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'info',
-      })
-        .then(() => {
-          this.deleteItem(ids)
-        })
-        .catch(() => {})
-    },
-    deleteItem(id) {
-      this.$axios.post(globalConfig.server1 + 'api/goods/deleteByName/' + id).then((res) => {
-        if (res.data.result === 1) {
-          this.$message({ message: '删除成功', type: 'success' })
-          this.getItems()
-        } else {
-        }
-      })
-    },
+
     getItems() {
       this.tableLoading = true
       this.$axios.post(globalConfig.server1 + 'api/goods/list', this.conditionForm).then((res) => {
@@ -538,19 +368,19 @@ export default {
             this.$message({ message: '没有找到匹配项', type: 'info' })
             return false
           }
-          this.currentItems = res.data.list
+          this.tableData = res.data.list
           this.conditionForm.page.pageNum = res.data.page.pageNum
           this.conditionForm.page.total = res.data.page.total
           this.conditionForm.page.pageSize = res.data.page.pageSize
-          this.currentItems.map((ele, index) => {
+          this.tableData.map((ele, index) => {
             ele.recommend += ''
             ele.sellStat += ''
             return ele
           })
-          sessionStorage.setItem('currentItems', JSON.stringify(this.currentItems))
+          sessionStorage.setItem('tableData', JSON.stringify(this.tableData))
         } else {
           this.$message({ message: '获取入库列表失败', type: 'error' })
-          this.currentItems = []
+          this.tableData = []
         }
         setTimeout(() => {
           this.tableLoading = false
@@ -571,11 +401,7 @@ export default {
       }
       this.getItems()
     },
-    selectionChange(selections) {
-      this.selectedItems = selections.map((item) => {
-        return item
-      })
-    },
+
     pageSizeChange(size) {
       this.conditionForm.page.pageSize = size
       this.getItems()
@@ -584,33 +410,10 @@ export default {
       this.conditionForm.page.pageNum = no
       this.getItems()
     },
-
-    resetForm: function () {
+    resetForm() {
       this.$refs['itemForm'].resetFields()
-      this.itemForm = {
-        goodsCommonId: -1,
-        price: null,
-        name: '',
-        description: '',
-        canSellSize: null,
-        sellSize: null,
-        size: null,
-      }
+      this.itemForm = this.$$options.data().itemForm
     },
-
-    //商品分类的接口
-    getCommonTypes() {
-      this.$axios.post(globalConfig.server1 + 'api/goodsType/getTypesByLevel/2').then((res) => {
-        if (res.data.result === 1) {
-          this.states = res.data.object
-          this.states.map((item) => {
-            return item
-          })
-        } else {
-        }
-      })
-    },
-
     /**
      * 状态 - 启用/禁用
      * @param { sid } 员工唯一标识
@@ -626,7 +429,6 @@ export default {
         })
       this.getItems()
     },
-
     // 排序
     sortInfo(event, id) {
       this.$axios.get(`${globalConfig.server1}api/goods/${event.id}/sort/${event.sort}`).then((res) => {
@@ -634,7 +436,6 @@ export default {
         this.getItems()
       })
     },
-
     // 上下架
     updateSwitch(event, uid) {
       this.$axios
@@ -653,12 +454,6 @@ export default {
 <style scoped>
 .el-table--border {
   padding-top: 20px;
-}
-
-#QRCode {
-  display: inline-block;
-  width: 200px !important;
-  height: 200px !important;
 }
 </style>
 <style>

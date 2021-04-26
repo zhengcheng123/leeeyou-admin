@@ -5,7 +5,7 @@
       <div class="aside-top">
         <img src="../../assets/logo.png"
              alt="">
-        <h3>乐有商城管理平台{{activeRouter}}</h3>
+        <h3>乐有商城管理平台</h3>
       </div>
       <el-scrollbar>
         <Aside :navMenus="menuList"></Aside>

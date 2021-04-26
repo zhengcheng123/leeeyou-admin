@@ -4,7 +4,7 @@
     <div class="breadcrumb">
       <el-breadcrumb separator="/">
         <el-breadcrumb-item v-for="i in breadcrumbAry"
-                            :key="i"
+                            :key="i.path"
                             :to="{ path: i.path }">{{i.name ? i.name : '首页'}}</el-breadcrumb-item>
       </el-breadcrumb>
     </div>

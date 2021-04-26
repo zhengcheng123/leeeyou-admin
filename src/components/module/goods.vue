@@ -64,9 +64,8 @@
           <el-button size="mini" @click="confirmPut" class="f-left">上架</el-button>-->
         <div class="left">
           <el-button size="mini"
-                     @click="addItem">添加商品</el-button>
+                     @click="addItem">新增</el-button>
         </div>
-
       </div>
       <!-- @selection-change="selectionChange" -->
       <!-- :height="tableHeight" -->
