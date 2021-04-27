@@ -1,11 +1,6 @@
 <template>
   <div class="wrapper">
     <div class="search_bar">
-      <!-- <div class="row"> -->
-      <!--<el-button icon="el-icon-delete" size="mini" plain type="danger" @click="confirmDelete()"-->
-      <!--class="f-left">删除-->
-      <!--</el-button>-->
-      <!-- </div> -->
       <el-form :inline="true">
         <el-form-item label="商品名称"
                       prop="name">
@@ -60,47 +55,30 @@
     </div>
     <section v-loading="tableLoading">
       <div class="operate_bar">
-        <!-- <el-button size="mini" @click="confirmBan" class="f-left">下架</el-button>
-          <el-button size="mini" @click="confirmPut" class="f-left">上架</el-button>-->
         <div class="left">
           <el-button size="mini"
                      @click="addItem">新增</el-button>
         </div>
       </div>
-      <!-- @selection-change="selectionChange" -->
-      <!-- :height="tableHeight" -->
-
       <el-table :data="currentItems"
                 @sort-change="sortItems"
                 height="0"
                 :header-cell-style="{background:'var(--background1)'}">
-        <!-- <el-table-column 
-                           type="selection"
-                           width="55"></el-table-column> -->
         <el-table-column width="80"
                          prop="typeName"
-                         label="类型"></el-table-column>
+                         label="类型" />
         <el-table-column min-width="120"
                          prop="name"
-                         label="名称"></el-table-column>
+                         label="名称" />
         <el-table-column width="80"
                          prop="canSellSize"
-                         label="库存"></el-table-column>
+                         label="库存" />
         <el-table-column width="80"
                          prop="sellSize"
-                         label="销量"></el-table-column>
-        <!-- <el-table-column  min-width="120" prop="maxPrice" label="最高价"></el-table-column>
-          <el-table-column  min-width="120" prop="minPrice" label="最低价"></el-table-column>-->
-
+                         label="销量" />
         <el-table-column min-width="200"
                          prop="description"
-                         label="商品描述"></el-table-column>
-        <!-- <el-table-column  min-width="110" prop="sellStat" label="销售状态">
-            <template slot-scope="props">
-              <span v-if="props.row.sellStat != -1">在售</span>
-              <span v-else>停售</span>
-            </template>
-          </el-table-column>-->
+                         label="商品描述" />
         <el-table-column width="160"
                          prop="sellStat"
                          label="销售状态">
@@ -111,7 +89,7 @@
                        inactive-text="下架"
                        active-value="1"
                        inactive-value="-1"
-                       @change="updateSwitch($event, props.row)"></el-switch>
+                       @change="updateSwitch($event, props.row)" />
           </template>
         </el-table-column>
         <el-table-column width="120"
@@ -124,7 +102,7 @@
                        v-model="props.row.recommend"
                        active-value="1"
                        inactive-value="0"
-                       @change="goodsSwitch($event, props.row)"></el-switch>
+                       @change="goodsSwitch($event, props.row)" />
           </template>
         </el-table-column>
         <el-table-column width="120"
@@ -135,7 +113,7 @@
                       size="mini"
                       v-model="props.row.sort"
                       style="width:60px"
-                      placeholder="请输入内容"></el-input>
+                      placeholder="请输入内容" />
           </template>
         </el-table-column>
         <el-table-column width="200"
@@ -175,36 +153,34 @@
         <el-form-item label="商品名称"
                       prop="name">
           <span>{{itemForm.name}}</span>
-          <!--<el-input v-model.trim="itemForm.name"></el-input>-->
         </el-form-item>
         <el-form-item label="商品描述"
                       prop="description">
-          <el-input v-model.trim="itemForm.description"></el-input>
+          <el-input v-model.trim="itemForm.description" />
         </el-form-item>
         <el-form-item label="定价"
                       prop="priceDollar">
-          <el-input v-model.number="itemForm.priceDollar"></el-input>
+          <el-input v-model.number="itemForm.priceDollar" />
         </el-form-item>
         <el-form-item label="成本"
                       prop="procurementPriceDollar">
-          <el-input v-model.number="itemForm.procurementPriceDollar"></el-input>
+          <el-input v-model.number="itemForm.procurementPriceDollar" />
         </el-form-item>
         <el-form-item label="运费"
                       prop="transformFeeDollar">
-          <el-input v-model.number="itemForm.transformFeeDollar"></el-input>
+          <el-input v-model.number="itemForm.transformFeeDollar" />
         </el-form-item>
         <el-form-item label="可售库存"
                       prop="canSellSize">
-          <el-input v-model.number="itemForm.canSellSize"></el-input>
+          <el-input v-model.number="itemForm.canSellSize" />
         </el-form-item>
         <el-form-item label="总库存"
                       prop="size">
-          <el-input v-model.number="itemForm.size"></el-input>
+          <el-input v-model.number="itemForm.size" />
         </el-form-item>
         <el-form-item label="已售"
                       prop="sellSize">
           <span>{{itemForm.sellSize}}</span>
-          <!--<el-input v-model.number="itemForm.sellSize"></el-input>-->
         </el-form-item>
         <el-button type="primary"
                    class="lg-btn"
@@ -218,7 +194,7 @@
                size="tiny"
                class="ORstyle"
                custom-class="goods-dialog">
-      <canvas id="QRCode"></canvas>
+      <canvas id="QRCode" />
     </el-dialog>
   </div>
 </template>
@@ -266,7 +242,6 @@ export default {
           { type: 'number', message: '值必须为数字' },
         ],
       },
-      /* table */
       currentItems: [],
       selectedItems: [],
       conditionForm: {
@@ -304,47 +279,8 @@ export default {
           label: '非热销商品',
         },
       ],
-      sellWell: [
-        {
-          sort: 1,
-          label: '1',
-        },
-        {
-          sort: 2,
-          label: '2',
-        },
-        {
-          sort: 3,
-          label: '3',
-        },
-        {
-          sort: 4,
-          label: '4',
-        },
-        {
-          sort: 5,
-          label: '5',
-        },
-        {
-          sort: 6,
-          label: '6',
-        },
-        {
-          sort: 10,
-          label: '取消热销',
-        },
-      ],
-      radioSell: '',
-      sortValue: '',
       states: [],
     }
-  },
-
-  computed: {
-    tableHeight() {
-      // the max height of table ,depend on what above on the table
-      return 500
-    },
   },
   mounted() {
     this.getItems()
@@ -353,9 +289,7 @@ export default {
   watch: {
     // 通过监听获取数据
     QRCodeMsg(val) {
-      // 获取页面的canvas
       var msg = document.getElementById('QRCode')
-      // 将获取到的数据（val）画到msg（canvas）上
       QRCode.toCanvas(msg, val, function (error) {
         console.log(error)
       })
@@ -649,80 +583,4 @@ export default {
   },
 }
 </script>
-<style scoped>
-.el-table--border {
-  padding-top: 20px;
-}
 
-#QRCode {
-  display: inline-block;
-  width: 200px !important;
-  height: 200px !important;
-}
-</style>
-<style>
-.se-table .el-table .cell {
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 3;
-  overflow: hidden;
-}
-/deep/.goods-dialog .el-dialog__body {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  -webkit-box-align: center;
-}
-.section-add {
-  display: inline-block;
-  float: right;
-  padding: 10px;
-  padding-right: 3%;
-}
-.clearfix:after {
-  /*伪元素是行内元素 正常浏览器清除浮动方法*/
-  content: '';
-  display: block;
-  height: 0;
-  clear: both;
-  visibility: hidden;
-}
-</style>
-<style scoped>
-.btn-group .el-select {
-  max-width: 120px;
-  padding-left: 10px;
-}
-.sellw .el-select-dropdown__item {
-  color: #eb8600;
-}
-</style>
-<style>
-.active .el-input__inner {
-  color: #eb8600;
-}
-.active .el-input.is-disabled .el-input__inner {
-  color: #eb8600;
-}
-.el-message-box__status {
-  top: 50%;
-  left: 101px;
-}
-.sellwell {
-  display: flex;
-  justify-content: center;
-}
-.btn-group .el-radio__input.is-checked + .el-radio__label {
-  color: #eb8600 !important;
-}
-.btn-group .el-radio__input.is-checked .el-radio__inner {
-  border-color: #eb8600 !important;
-  background: #eb8600 !important;
-}
-.goods-index .el-table--border::after,
-.el-table--group::after,
-.el-table::before {
-  content: initial;
-  display: none;
-}
-</style>

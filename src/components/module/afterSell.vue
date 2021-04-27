@@ -32,12 +32,17 @@
                           start-placeholder="开始"
                           end-placeholder="结束"></el-date-picker>
         </el-form-item>
-        <el-form-item>
-          <el-button type="primary"
-                     size="mini"
-                     @click="searchData">搜 索</el-button>
-        </el-form-item>
       </el-form>
+      <div class="right">
+        <el-button size="mini"
+                   type="primary"
+                   icon="el-icon-search"
+                   @click="search">搜索</el-button>
+        <el-button size="mini"
+                   icon="el-icon-refresh-right"
+                   @click="resetSearch">重置</el-button>
+
+      </div>
     </div>
     <section>
       <!-- @selection-change="selectionChange" -->
@@ -200,8 +205,6 @@
            style="max-width: 100%;"
            alt="">
     </el-dialog>
-
-    <!-- <afterDetail v-if="detail"></afterDetail> -->
   </div>
 </template>
 <script>
@@ -249,6 +252,15 @@ export default {
     this.getItems()
   },
   methods: {
+    search() {
+      this.conditionForm.page = this.$options.data().conditionForm.page
+      this.getItems()
+    },
+    resetSearch() {
+      this.conditionForm = this.$options.data().conditionForm
+      this.getItems()
+    },
+
     previewImg(url) {
       this.targetImg = url
       this.imgVisible = true
@@ -307,16 +319,6 @@ export default {
         })
         .catch(() => {})
     },
-    searchData() {
-      this.conditionForm.page = {
-        pageNum: 1,
-        pageSize: 15,
-        total: 0,
-        sortname: 'id',
-        sortorder: 'desc',
-      }
-      this.getItems()
-    },
     getTime(timeDate) {
       var Time = new Date(timeDate)
       var timestemp = Time.getTime()
@@ -336,7 +338,6 @@ export default {
         },
         page: this.conditionForm.page,
       }
-      console.log(params, 'pppppp')
       this.$http
         .ajax({
           url: APIHOST + 'api/afterSell/list',

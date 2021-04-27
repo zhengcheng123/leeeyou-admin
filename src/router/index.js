@@ -124,11 +124,15 @@ export default new Router({
           path: "/editCounpon",
           component: resolve => import("@/components/module/editCounpon")
         },
-
         {
           path: "/coupon",
-          name: "营销管理",
+          name: "优惠券管理",
           component: resolve => import("@/components/module/coupon/list")
+        },
+        {
+          path: "/coupon/add",
+          name: "新增优惠券",
+          component: resolve => import("@/components/module/coupon/add")
         }
       ]
     }

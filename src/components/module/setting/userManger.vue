@@ -1,266 +1,245 @@
 <template>
-  <div class="wrapper user-manage">
-    <div class="content">
-      <div class="search-bar">
-        <div class="search-item">
-          <span class="label">账号：</span>
-          <el-input v-model.trim="conditionForm.condition[0].value"
-                    placeholder="请输入账号"
+  <div class="wrapper">
+    <div class="search_bar">
+      <el-form :inline="true">
+        <el-form-item label="账号">
+          <el-input clearable
                     size="mini"
-                    clearable
-                    @keyup.enter.native="getTableItems"></el-input>
-        </div>
-        <!-- v-if="$_has('userSelect-user')" -->
-        <div class="search-btnT">
-          <el-button class="f-left"
-                     type="primary"
-                     size="mini"
-                     @click="searchData">查询</el-button>
-          <!-- v-if="$_has('userInsert-user')" -->
-          <el-button class="f-left"
-                     type="primary"
-                     size="mini"
+                    placeholder="请输入"
+                    v-model.trim="conditionForm.condition[0].value" />
+        </el-form-item>
+      </el-form>
+      <div class="right">
+        <el-button size="mini"
+                   type="primary"
+                   icon="el-icon-search"
+                   @click="search">搜索</el-button>
+        <el-button size="mini"
+                   icon="el-icon-refresh-right"
+                   @click="resetSearch">重置</el-button>
+        <div>
+          <el-button size="mini"
                      :disabled="checkId.length !== 0"
-                     @click="addItems">添加</el-button>
-          <!--             v-if="$_has('userDelete-user')" -->
-          <el-button class="f-left"
-                     type="info"
-                     size="mini"
-                     :disabled="checkId.length == 0"
-                     @click="deleteItems()">删除</el-button>
-          <!-- v-if="$_has('userUpdate-user')" -->
-          <el-button class="f-left"
-                     type="primary"
-                     size="mini"
-                     :disabled="checkId.length !== 1"
-                     @click="editItems(1)">编辑</el-button>
+                     @click="addItems">新增</el-button>
         </div>
+
       </div>
-      <section v-loading="tableLoading"
-               element-loading-text="数据请求中"
-               element-loading-spinner="el-icon-loading">
-        <!--           @row-dblclick="editItems"
-        -->
-        <el-table :data="tableData"
-                  border
-                  @selection-change="handleSelectionChange"
-                  @select="checkOne">
-          <el-table-column type="selection"
-                           align="center"
-                           width="55"></el-table-column>
-          <el-table-column type="index"
-                           align="center"
-                           width="55"
-                           label="序号"></el-table-column>
-          <el-table-column prop="name"
-                           min-width="100"
-                           sortable
-                           align="center"
-                           show-overflow-tooltip
-                           label="账号"></el-table-column>
-          <el-table-column prop="real_name"
-                           min-width="150"
-                           sortable
-                           align="center"
-                           show-overflow-tooltip
-                           label="用户真实姓名"></el-table-column>
-          <el-table-column prop="qq"
-                           min-width="120"
-                           sortable
-                           align="center"
-                           show-overflow-tooltip
-                           label="qq号"></el-table-column>
-          <el-table-column prop="age"
-                           min-width="120"
-                           sortable
-                           align="center"
-                           show-overflow-tooltip
-                           label="年龄"></el-table-column>
-          <el-table-column prop="phone"
-                           min-width="120"
-                           sortable
-                           align="center"
-                           show-overflow-tooltip
-                           label="手机号"></el-table-column>
-
-          <el-table-column prop="auth_account"
-                           min-width="120"
-                           sortable
-                           align="center"
-                           show-overflow-tooltip
-                           label="证件号"></el-table-column>
-          <el-table-column prop="auth_type"
-                           min-width="120"
-                           sortable
-                           align="center"
-                           show-overflow-tooltip
-                           label="证件类型">
-            <template slot-scope="props">
-              <span v-if="props.row.auth_type ===1">身份证</span>
-              <span v-if="props.row.auth_type ===2">护照</span>
-              <span v-if="props.row.auth_type ===3">港台回乡证</span>
-              <span v-if="props.row.auth_type ===4">港澳居民内地通行证</span>
-            </template>
-          </el-table-column>
-          <el-table-column min-width="120"
-                           prop="enable"
-                           align="center"
-                           label="启用状态">
-            <template slot-scope="props">
-              <el-switch v-model="props.row.enable"
-                         active-value="1"
-                         inactive-value="0"
-                         active-color="#eb8600"
-                         inactive-color="#9F9E22"
-                         @change="statusSwitch($event, props.row)"></el-switch>
-            </template>
-          </el-table-column>
-        </el-table>
-        <footer>
-          <el-pagination background
-                         class="pagination"
-                         layout="total, sizes, prev, pager, next, jumper"
-                         :current-page.sync="conditionForm.page.pageNum"
-                         :page-sizes="[15,30,50,100]"
-                         :page-size.sync="conditionForm.page.pageSize"
-                         :total="conditionForm.page.total"
-                         @size-change="handleSizeChange"
-                         @current-change="handleCurrentChange"></el-pagination>
-        </footer>
-      </section>
-
-      <el-dialog width="800px"
-                 :title="dialogTitle"
-                 :close-on-click-modal="false"
-                 :visible.sync="dialogFormVisible"
-                 class="dialog-common-style"
-                 @closed="resetForm">
-        <el-form :model="userInfoForm"
-                 :rules="rules"
-                 ref="userInfoForm"
-                 :label-width="formLabelWidth">
-          <el-form-item label="账号"
-                        prop="name">
-            <el-col :span="22">
-              <el-input v-model.trim="userInfoForm.name"
-                        clearable
-                        size="mini"
-                        placeholder="请输入账号"
-                        autocomplete="off"></el-input>
-            </el-col>
-          </el-form-item>
-          <el-form-item label="真实姓名"
-                        prop="realName">
-            <el-col :span="22">
-              <el-input v-model.trim="userInfoForm.realName"
-                        clearable
-                        size="mini"
-                        placeholder="请输入真实姓名"
-                        autocomplete="off"></el-input>
-            </el-col>
-          </el-form-item>
-          <el-form-item label="证件类型"
-                        prop="authType">
-            <el-col :span="22">
-              <el-select clearable
-                         v-model="userInfoForm.authType">
-                <el-option v-for="(item,index) in authTypeOptions"
-                           :key="index"
-                           :label="item.label"
-                           :value="item.value*1"></el-option>
-              </el-select>
-            </el-col>
-          </el-form-item>
-          <el-form-item label="证件号"
-                        prop="authAccount">
-            <el-col :span="22">
-              <el-input v-model.trim="userInfoForm.authAccount"
-                        clearable
-                        size="mini"
-                        placeholder="请输入证件号"
-                        autocomplete="off"></el-input>
-            </el-col>
-          </el-form-item>
-          <el-form-item label="密码"
-                        prop="password">
-            <el-col :span="22">
-              <el-input v-model.trim="userInfoForm.password"
-                        show-password
-                        size="mini"
-                        placeholder="请输入密码"
-                        autocomplete="new-password"></el-input>
-            </el-col>
-          </el-form-item>
-          <el-form-item label="确认密码"
-                        prop="checkPass">
-            <el-col :span="22">
-              <el-input v-model.trim="userInfoForm.checkPass"
-                        show-password
-                        size="mini"
-                        placeholder="请再次输入密码"
-                        autocomplete="new-password"></el-input>
-            </el-col>
-          </el-form-item>
-          <el-form-item label="手机号"
-                        prop="phone">
-            <el-col :span="22">
-              <el-input v-model.trim="userInfoForm.phone"
-                        clearable
-                        size="mini"
-                        placeholder="请输入手机号"
-                        autocomplete="off"></el-input>
-            </el-col>
-          </el-form-item>
-          <el-form-item label="qq"
-                        prop="qq">
-            <el-col :span="22">
-              <el-input v-model.trim="userInfoForm.qq"
-                        clearable
-                        size="mini"
-                        placeholder="请输入qq"
-                        autocomplete="off"></el-input>
-            </el-col>
-          </el-form-item>
-
-          <el-form-item label="年龄"
-                        prop="age">
-            <el-col :span="22">
-              <el-input v-model.trim="userInfoForm.age"
-                        clearable
-                        size="mini"
-                        min="0"
-                        oninput="value=value.replace(/[^\d]/g,'')"
-                        placeholder="请输入年龄"
-                        autocomplete="off"></el-input>
-            </el-col>
-          </el-form-item>
-          <el-form-item label="角色"
-                        prop="roles">
-            <el-col>
-              <el-select class="palte"
-                         v-model="userInfoForm.roles"
-                         multiple
-                         placeholder="请选择">
-                <el-option v-for="(item,index) in options"
-                           :key="index"
-                           :label="item.label"
-                           :value="item.value"></el-option>
-              </el-select>
-            </el-col>
-          </el-form-item>
-        </el-form>
-        <div slot="footer"
-             class="dialog-footer">
-          <el-button size="mini"
-                     type="primary"
-                     :loading="submitLoading"
-                     @click="submitFom">提 交</el-button>
-          <el-button size="mini"
-                     type="info"
-                     @click="resetForm">取 消</el-button>
-        </div>
-      </el-dialog>
     </div>
+    <section v-loading="tableLoading">
+      <div class="operate_bar">
+        <div class="left">
+
+        </div>
+
+      </div>
+      <el-table :data="tableData"
+                @sort-change="sortItems"
+                height="0"
+                :header-cell-style="{background:'var(--background1)'}">
+        <el-table-column type="selection"
+                         align="center"
+                         width="55"></el-table-column>
+        <el-table-column type="index"
+                         width="55"
+                         label="序号"></el-table-column>
+        <el-table-column prop="name"
+                         min-width="100"
+                         show-overflow-tooltip
+                         label="账号"></el-table-column>
+        <el-table-column prop="real_name"
+                         width="120"
+                         label="用户真实姓名"></el-table-column>
+        <el-table-column prop="qq"
+                         width="120"
+                         show-overflow-tooltip
+                         label="qq号"></el-table-column>
+        <el-table-column prop="age"
+                         min-width="120"
+                         show-overflow-tooltip
+                         label="年龄"></el-table-column>
+        <el-table-column prop="phone"
+                         width="120"
+                         show-overflow-tooltip
+                         label="手机号" />
+        <el-table-column prop="auth_account"
+                         width="180"
+                         label="证件号"></el-table-column>
+        <el-table-column prop="auth_type"
+                         width="120"
+                         show-overflow-tooltip
+                         label="证件类型">
+          <template slot-scope="props">
+            <span v-if="props.row.auth_type ===1">身份证</span>
+            <span v-if="props.row.auth_type ===2">护照</span>
+            <span v-if="props.row.auth_type ===3">港台回乡证</span>
+            <span v-if="props.row.auth_type ===4">港澳居民内地通行证</span>
+          </template>
+        </el-table-column>
+        <el-table-column width="120"
+                         prop="enable"
+                         label="启用状态">
+          <template slot-scope="props">
+            <el-switch v-model="props.row.enable"
+                       active-value="1"
+                       inactive-value="0"
+                       active-color="#eb8600"
+                       inactive-color="#9F9E22"
+                       @change="statusSwitch($event, props.row)"></el-switch>
+          </template>
+        </el-table-column>
+        <el-table-column width="120"
+                         label="操作">
+          <template slot-scope="props">
+            <el-button type="text"
+                       @click="editItems(props.id)">编辑</el-button>
+            <el-button type="text"
+                       @click="deleteItems(props.id)">删除</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+      <el-pagination background
+                     class="pagination"
+                     @size-change="handleSizeChange"
+                     :page-sizes="[15,30,50,100]"
+                     :page-size.sync="conditionForm.page.pageSize"
+                     :current-page.sync="conditionForm.page.pageNum"
+                     @current-change="handleCurrentChange"
+                     layout="total, sizes, prev, pager, next, jumper"
+                     :total="conditionForm.page.total" />
+    </section>
+    <el-dialog width="800px"
+               :title="dialogTitle"
+               :close-on-click-modal="false"
+               :visible.sync="dialogFormVisible"
+               class="dialog-common-style"
+               @closed="resetForm">
+      <el-form :model="userInfoForm"
+               :rules="rules"
+               ref="userInfoForm"
+               :label-width="formLabelWidth">
+        <el-form-item label="昵称"
+                      prop="realName">
+          <el-col :span="22">
+            <el-input v-model.trim="userInfoForm.realName"
+                      clearable
+                      size="mini"
+                      placeholder="请输入真实姓名"
+                      autocomplete="off"></el-input>
+          </el-col>
+        </el-form-item>
+        <el-form-item label="账号"
+                      prop="name">
+          <el-col :span="22">
+            <el-input v-model.trim="userInfoForm.name"
+                      clearable
+                      size="mini"
+                      placeholder="请输入账号"
+                      autocomplete="off"></el-input>
+          </el-col>
+        </el-form-item>
+
+        <!-- <el-form-item label="证件类型"
+                      prop="authType">
+          <el-col :span="22">
+            <el-select clearable
+                       v-model="userInfoForm.authType">
+              <el-option v-for="(item,index) in authTypeOptions"
+                         :key="index"
+                         :label="item.label"
+                         :value="item.value*1"></el-option>
+            </el-select>
+          </el-col>
+        </el-form-item>
+        <el-form-item label="证件号"
+                      prop="authAccount">
+          <el-col :span="22">
+            <el-input v-model.trim="userInfoForm.authAccount"
+                      clearable
+                      size="mini"
+                      placeholder="请输入证件号"
+                      autocomplete="off"></el-input>
+          </el-col>
+        </el-form-item> -->
+        <el-form-item label="密码"
+                      prop="password">
+          <el-col :span="22">
+            <el-input v-model.trim="userInfoForm.password"
+                      show-password
+                      size="mini"
+                      placeholder="请输入密码"
+                      autocomplete="new-password"></el-input>
+          </el-col>
+        </el-form-item>
+        <el-form-item label="确认密码"
+                      prop="checkPass">
+          <el-col :span="22">
+            <el-input v-model.trim="userInfoForm.checkPass"
+                      show-password
+                      size="mini"
+                      placeholder="请再次输入密码"
+                      autocomplete="new-password"></el-input>
+          </el-col>
+        </el-form-item>
+        <el-form-item label="手机号"
+                      prop="phone">
+          <el-col :span="22">
+            <el-input v-model.trim="userInfoForm.phone"
+                      clearable
+                      size="mini"
+                      placeholder="请输入手机号"
+                      autocomplete="off"></el-input>
+          </el-col>
+        </el-form-item>
+        <el-form-item label="qq"
+                      prop="qq">
+          <el-col :span="22">
+            <el-input v-model.trim="userInfoForm.qq"
+                      clearable
+                      size="mini"
+                      placeholder="请输入qq"
+                      autocomplete="off"></el-input>
+          </el-col>
+        </el-form-item>
+
+        <el-form-item label="年龄"
+                      prop="age">
+          <el-col :span="22">
+            <el-input v-model.trim="userInfoForm.age"
+                      clearable
+                      size="mini"
+                      min="0"
+                      oninput="value=value.replace(/[^\d]/g,'')"
+                      placeholder="请输入年龄"
+                      autocomplete="off"></el-input>
+          </el-col>
+        </el-form-item>
+        <el-form-item label="角色"
+                      prop="roles">
+          <el-col :span="22">
+            <el-select v-model="userInfoForm.roles"
+                       multiple
+                       style="width: 100%"
+                       size="small"
+                       placeholder="请选择">
+              <el-option v-for="(item,index) in options"
+                         :key="index"
+                         :label="item.label"
+                         :value="item.value"></el-option>
+            </el-select>
+          </el-col>
+        </el-form-item>
+      </el-form>
+      <div slot="footer"
+           class="dialog-footer">
+        <el-button size="mini"
+                   type="primary"
+                   :loading="submitLoading"
+                   @click="submitFom">提 交</el-button>
+        <el-button size="mini"
+                   type="info"
+                   @click="resetForm">取 消</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -437,6 +416,15 @@ export default {
     this.getRole()
   },
   methods: {
+    search() {
+      this.conditionForm.page = this.$options.data().conditionForm.page
+      this.getTableItems()
+    },
+    resetSearch() {
+      this.conditionForm = this.$options.data().conditionForm
+      this.getTableItems()
+    },
+
     getValue(value) {
       this.valueId = value
       this.conditionForm.departmentId = this.valueId
@@ -465,16 +453,6 @@ export default {
         formData.append(element, oldData[element])
       })
       return formData
-    },
-
-    searchData() {
-      this.conditionForm.page = {
-        pageNum: 1,
-        pageSize: 15,
-        total: 16,
-        orders: [],
-      }
-      this.getTableItems()
     },
     /**
      * 获取表格数据
@@ -530,9 +508,8 @@ export default {
     /**
      * 编辑账号信息
      */
-    editItems(obj) {
+    editItems(id) {
       this.dialogTitle = '编辑账号'
-      let id = this.checkId[0].id
       this.$axios.get(`${globalConfig.server1}user/detail/${id}`).then((res) => {
         let form = {
           roles: [],
@@ -685,19 +662,3 @@ export default {
   },
 }
 </script>
-<style scoped  >
-@import '../../../assets/css/base.css';
-.user-manage .el-form {
-  display: flex;
-  flex-flow: row wrap;
-}
-.el-form-item {
-  flex: 0 0 50%;
-}
-.user-manage .el-form-item .wrapper .search-bar > div.search-btnT .el-button {
-  padding: 10px 20px !important;
-}
-.palte {
-  width: 100%;
-}
-</style>
