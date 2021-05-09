@@ -66,14 +66,13 @@ const errorHandle = (status, other) => {
       Message.error("服务器错误");
       break;
     default:
-    // console.log(other)
   }
 };
 
 // 创建axios 实例
 
 const service = axios.create({
-  baseURL: axios.defaults.baseURL,
+  baseURL: "http://www.leeeyou.com/jerry_server/",
   timeout: 10000,
   withCredentials: true
 });
@@ -91,12 +90,11 @@ service.interceptors.request.use(
 // response 拦截器
 service.interceptors.response.use(
   response => {
-    console.log("response", response);
-    // 监听所有响应设置统一拦截
-    return response;
+    // console.log("response", response);
+    return response.status === 200 ? response.data : response.data;
   },
   error => {
-    console.log("error");
+    // console.log("error");
     if (axios.isCancel(error)) {
       // 取消请求导致的error
       return new Promise(() => {});

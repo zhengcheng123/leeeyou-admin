@@ -12,7 +12,6 @@
 .container {
   margin-left: var(--nav-width);
   margin-top: 50px;
-  padding: 0 12px 12px;
   background-color: var(--background);
   height: calc(100vh - 50px);
   display: flex;
@@ -22,6 +21,7 @@
     height: 100%;
     display: flex;
     flex-direction: column;
+    padding: 0 12px 12px;
 
     .el-button--mini {
       font-size: 14px;
@@ -46,11 +46,13 @@
       padding: 10px 16px 6px;
       margin: 0 -12px 12px;
 
-      .el-form-item {
-        margin-bottom: 4px !important;
+      .el-form.el-form--inline {
+        .el-form-item {
+          margin-bottom: 4px !important;
 
-        .el-form-item__label {
-          padding: 0 10px 0 0;
+          .el-form-item__label {
+            padding: 0 10px 0 0;
+          }
         }
       }
 
@@ -132,6 +134,16 @@
         .el-table__body-wrapper {
           td {
             padding: 6px 0;
+
+            .cell {
+              overflow: hidden;
+              text-overflow: ellipsis;
+              display: -webkit-box;
+              /*! autoprefixer: off */
+              -webkit-box-orient: vertical;
+              /* autoprefixer: on */
+              -webkit-line-clamp: 3;
+            }
           }
         }
       }
@@ -354,15 +366,6 @@
   height: 0 !important;
 }
 
-.el-table .cell {
-  table-layout: auto;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-}
-
 .el-message-box .el-message-box__header .el-message-box__title,
 .el-message-box__container,
 .el-message-box__btns,
@@ -389,4 +392,20 @@
   background-color: #fff;
   padding: 12px;
   border-radius: 3px;
+}
+
+.el-select__tags {
+  .el-tag {
+    max-width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+    .el-select__tags-text {
+      flex: 1;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+    }
+  }
 }

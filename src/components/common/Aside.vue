@@ -9,14 +9,14 @@
            :key="items.id">
         <el-submenu v-if="items.children.length"
                     :index="items.path">
-          <template slot="title"><i class="el-icon-menu"></i>{{items.name}}</template>
+          <template slot="title"><i :class="items.icon || 'el-icon-menu'"></i>{{items.name}}</template>
           <el-menu-item v-for="subItems in items.children"
                         :key="subItems.id"
                         :index="subItems.path">{{subItems.name}}</el-menu-item>
         </el-submenu>
         <el-menu-item v-if="!items.children.length"
                       :index="items.path">
-          <i class="el-icon-menu"></i>
+          <i :class="items.icon || 'el-icon-menu'"></i>
           <span slot="title">{{items.name}}</span>
         </el-menu-item>
       </div>
@@ -40,6 +40,9 @@ export default {
     activeRouter() {
       return this.$route.path
     },
+  },
+  mounted() {
+    console.log(this.navMenus)
   },
 }
 </script>

@@ -12,6 +12,7 @@ import "./assets/global.scss"; // global css
 import "./assets/custom.scss";
 import "./assets/iconfonts/iconfont.css"; // icon-font
 
+import https from "./assets/api/axios";
 
 Vue.use(ElementUI);
 Vue.config.productionTip = false;
@@ -34,12 +35,14 @@ if (process.env.NODE_ENV == "development") {
 }
 
 global.downloadFileApiHost = "http://218.93.24.35/"; // 文件下载地址
+
 axios.defaults.withCredentials = true;
 axios.defaults.headers = globalConfig.header;
 
 Vue.prototype.$http = jquery;
 
 Vue.prototype.$axios = axios;
+Vue.prototype.$https = https;
 
 // const DEVSERVER = "http://42.192.234.88:9500/jerry_server/";
 const DEVSERVER = "http://www.leeeyou.com/jerry_server/";

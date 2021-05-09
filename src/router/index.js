@@ -22,6 +22,9 @@ export default new Router({
         {
           path: "/api/goods",
           name: "商品管理",
+          meta: {
+            iconName: 'el-icon-goods'
+          },
           component: resolve => import("@/components/module/goods")
         },
         {

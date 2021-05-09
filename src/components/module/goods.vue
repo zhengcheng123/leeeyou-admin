@@ -70,6 +70,16 @@
         <el-table-column min-width="120"
                          prop="name"
                          label="名称" />
+        <el-table-column width="130"
+                         prop="pic1"
+                         label="图片">
+          <template slot-scope="props">
+            <el-image style="width: 100px; height: 100px"
+                      :src="downloadFileApiHost + props.row.pic1"
+                      :preview-src-list="[`${downloadFileApiHost}${props.row.pic1}`]">
+            </el-image>
+          </template>
+        </el-table-column>
         <el-table-column width="80"
                          prop="canSellSize"
                          label="库存" />
@@ -203,6 +213,7 @@ import QRCode from 'qrcode'
 export default {
   data() {
     return {
+      downloadFileApiHost: global.downloadFileApiHost,
       pagedata: '',
       sellStat1: '',
       sellStat: 1,
@@ -285,6 +296,7 @@ export default {
   mounted() {
     this.getItems()
     this.getCommonTypes()
+    console.log('downloadFileApiHost',downloadFileApiHost);
   },
   watch: {
     // 通过监听获取数据
