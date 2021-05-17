@@ -256,8 +256,8 @@ export default {
     onSubmit() {
       this.$refs['form'].validate((valid) => {
         if (valid) {
-          alert('submit!')
-          return console.log(this.form)
+          // alert('submit!')
+          // return console.log(this.form)
           if (this.collectionRules === '1') {
             this.form.distributeUserLimite = this.form.availableQuantity
             this.form.distributeDayLimite = 0

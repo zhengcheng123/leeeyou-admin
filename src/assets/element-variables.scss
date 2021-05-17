@@ -1,7 +1,10 @@
 :root {
   --white: #ffffff;
   --black: #000000;
-  --primary: #F77F00;
+  --blue: #1B98E0;
+  --green: #1A936F;
+
+  --primary: #f77f00;
   --primary-light: #f3b769;
   // --primary-light: #eb8600;
   --background: #e8eaee;
@@ -21,7 +24,7 @@
 
 /* 改变主题色变量 */
 $-color-white: #ffffff;
-$--color-primary: #F77F00;
+$--color-primary: #f77f00;
 
 /* 改变 icon 字体路径变量，必需 */
 $--font-path: "~element-ui/lib/theme-chalk/fonts";

@@ -3,8 +3,7 @@
     <div class="search_bar">
       <el-form :inline="true">
         <el-form-item label="创建时间">
-          <el-date-picker class="date-picker"
-                          size="mini"
+          <el-date-picker size="mini"
                           v-model="conditionForm.item.initTime"
                           type="daterange"
                           range-separator="至"
@@ -69,32 +68,32 @@
         <!-- <el-table-column type="selection"
                          width="55"
                          align="center"></el-table-column> -->
+        <!-- fixed="left" -->
         <el-table-column prop="code"
                          width="180"
-                         fixed="left"
-                         label="订单号"></el-table-column>
+                         label="订单号" />
         <el-table-column prop="payment"
-                         width="120"
+                         width="100"
                          label="实际付款"
                          sortable>
           <template slot-scope="props">{{pennyToDollar(props.row.payment)}}</template>
         </el-table-column>
         <!-- <el-table-column prop="paycode" label="支付交易编号" align="center"></el-table-column> -->
         <el-table-column prop="buyerName"
-                         width="120"
+                         width="100"
                          label="客户"></el-table-column>
         <!--<el-table-column prop="shopping_addr" label="收货地址id" sortable></el-table-column>-->
         <!--<el-table-column prop="stat" label="交易状态" sortable align="center"></el-table-column>-->
         <el-table-column prop="comment"
-                         width="120"
+                         min-width="120"
                          label="买家备注"></el-table-column>
         <el-table-column label="配送方式"
                          width="80">
           <template slot-scope="props">
             <span v-if="props.row.logisticsType === 1"
-                  :style="{color: 'green'}">快递</span>
+                  :style="{color: 'var(--green)'}">快递</span>
             <span v-if="props.row.logisticsType === 2"
-                  :style="{color: 'blue'}">自提</span>
+                  :style="{color: 'var(--blue)'}">自提</span>
             <span v-if="props.row.logisticsType === 3">无物流</span>
           </template>
         </el-table-column>
@@ -112,43 +111,51 @@
         </el-table-column>
         <el-table-column prop="createTime"
                          width="190"
-                         label="创建时间"
-                         sortable>
+                         label="创建时间">
           <template slot-scope="props">{{renderTime(props.row.createTime)}}</template>
         </el-table-column>
         <el-table-column prop="payTime"
                          width="190"
-                         label="付款时间"
-                         sortable>
+                         label="付款时间">
           <template slot-scope="props">{{renderTime(props.row.payTime)}}</template>
         </el-table-column>
         <el-table-column prop="sendTime"
                          width="190"
-                         label="发货时间"
-                         sortable>
+                         label="发货时间">
           <template slot-scope="props">{{renderTime(props.row.sendTime)}}</template>
         </el-table-column>
         <el-table-column prop="finishTime"
                          width="190"
-                         label="成交时间"
-                         sortable>
+                         label="成交时间">
           <template slot-scope="props">{{renderTime(props.row.finishTime)}}</template>
         </el-table-column>
         <el-table-column label="操作"
-                         fixed="right"
-                         width="120">
+                         width="100">
           <template scope="props">
             <div class="btn-group">
-              <el-button v-if="props.row.logisticsType===1"
+              <el-button v-if="props.row.logisticsType === 1"
                          type="text"
-                         :disabled="props.row.stat!==2"
+                         :disabled="props.row.stat !== 2"
+                         @click="sendGoods(props.row)">发货</el-button>
+
+              <el-popconfirm title="确定核销订单吗？"
+                             @confirm="writeOff(props.row)">
+                <el-button v-if="props.row.logisticsType === 2"
+                           slot="reference"
+                           :disabled="props.row.stat !== 2"
+                           type="text">核销</el-button>
+              </el-popconfirm>
+              <el-button type="text"
+                         @click="tradeDetail(props.row.id)">详情</el-button>
+
+              <!-- <el-button v-if="props.row.logisticsType===1"
+                         type="text"
                          @click="sendGoods(props.row)">发货</el-button>
               <el-button v-if="props.row.logisticsType===2"
                          type="text"
-                         :disabled="props.row.stat!==2"
                          @click="writeOff(props.row)">核销</el-button>
               <el-button type="text"
-                         @click="tradeDetail(props.row.id)">详情</el-button>
+                         @click="tradeDetail(props.row.id)">详情</el-button> -->
             </div>
           </template>
         </el-table-column>
@@ -163,46 +170,50 @@
                      layout="total, sizes,prev, pager, next, jumper"
                      :total="conditionForm.page.total"></el-pagination>
     </section>
+
     <el-dialog title="发货"
+               width="450px"
                :visible.sync="logisticsFormVisible"
-               custom-class="logistics-dialog"
                @close="resetForm">
       <el-form :model="logisticsForm"
                ref="logisticsForm"
                label-width="90px"
-               class="account-form"
                :rules="logisticsFormRules">
-
         <el-form-item label="运单号"
                       prop="logisticsCode">
-          <el-input v-model.trim="logisticsForm.logisticsCode"></el-input>
+          <el-input size="mini"
+                    v-model.trim="logisticsForm.logisticsCode"></el-input>
         </el-form-item>
         <!-- <el-form-item label="运费" prop="priceDollar">
             <el-input v-model.number="logisticsForm.priceDollar"></el-input>
           </el-form-item>-->
         <el-form-item label="备注"
                       prop="comment">
-          <el-input v-model.trim="logisticsForm.comment"></el-input>
+          <el-input size="mini"
+                    v-model.trim="logisticsForm.comment"></el-input>
         </el-form-item>
-        <div class="butn">
-          <el-button class="lg-btn sure-btn"
-                     :loading="saving"
-                     @click="saveLogistics">确认</el-button>
-        </div>
       </el-form>
+      <div slot="footer"
+           class="dialog-footer">
+        <el-button size="mini"
+                   @click="logisticsFormVisible = false">取 消</el-button>
+        <el-button size="mini"
+                   type="primary"
+                   :loading="saving"
+                   @click="saveLogistics">确 定</el-button>
+      </div>
     </el-dialog>
   </div>
 </template>
+
 <script>
 import { renderTime, pennyToDollar, renderStateLabel } from '../../assets/utils'
-
 export default {
   name: 'trade',
   data() {
     return {
       ticeId: '',
       typeTice: '',
-      /* util methods */
       renderTime,
       pennyToDollar,
       renderStateLabel,
@@ -230,8 +241,6 @@ export default {
       },
       sendGoodsTradeId: -1,
       // sendGoodsTradeId: "",
-
-      /* item form */
       itemForm: {
         id: -1,
         freight: null,
@@ -533,18 +542,8 @@ export default {
   },
 }
 </script>
+
 <style scoped>
-.date-picker {
-  /*width: 30px;*/
-  width: 350px;
-}
-.goods-row {
-  width: 100%;
-  background-color: #fff;
-  padding-left: 39px;
-  border-radius: 3px;
-  padding-top: 21px;
-}
 .adds-btn {
   background-color: #eb8600;
   color: #fff;
@@ -566,24 +565,4 @@ export default {
   justify-content: center;
 }
 </style>
-<style>
-.goods-row .el-radio-button__orig-radio:checked + .el-radio-button__inner {
-  background-color: #eb8600;
-  border-color: #eb8600;
-  -webkit-box-shadow: -1px 0 0 0 #eb8600;
-  box-shadow: -1px 0 0 0 #eb8600;
-  color: #fff;
-}
-.goods-row .el-radio-button__inner:hover {
-  color: #eb8600;
-}
-.btn-delive {
-  width: 55px !important;
-  cursor: pointer;
-  background: none;
-}
-.btn-delive:active {
-  background: none !important;
-  border: none;
-}
-</style>
+

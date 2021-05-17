@@ -1018,10 +1018,7 @@ export default {
   padding-left: 130px;
   padding-bottom: 20px;
 }
-.el-message-box__status {
-  top: 25%;
-  left: 0;
-}
+
 .ruleFormc .el-form-item__error {
   top: 47%;
   left: 96px;
