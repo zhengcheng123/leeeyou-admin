@@ -17,7 +17,7 @@
         <i class="el-icon-edit-outline editOutline"></i>
         <span>修改密码</span>
       </div>
-      <div @click="logout">
+      <div @click="logout" style="cursor: pointer;">
         <i class="fa fa-sign-out"
            aria-hidden="true"></i>
         <span>注销</span>

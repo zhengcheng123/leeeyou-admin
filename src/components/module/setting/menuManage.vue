@@ -157,7 +157,7 @@
                       size="mini"></el-input>
           </el-col>
         </el-form-item>
-        <el-form-item label="首页封面"
+        <!-- <el-form-item label="首页封面"
                       required
                       v-if="form.grade=='一级菜单'">
           <el-col :span="22">
@@ -176,7 +176,7 @@
                  class="el-icon-plus avatar-uploader-icon"></i>
             </el-upload>
           </el-col>
-        </el-form-item>
+        </el-form-item> -->
       </el-form>
       <div slot="footer"
            class="dialog-footer">

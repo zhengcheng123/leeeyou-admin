@@ -89,7 +89,7 @@ export default {
   },
   methods: {
     getVersion() {
-      console.log(APIHOST)
+      console.log('APIHOST', APIHOST)
       this.$http
         .ajax({
           url: APIHOST + 'cgi/system/getVersion',

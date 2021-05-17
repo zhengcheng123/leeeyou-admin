@@ -72,7 +72,8 @@ const errorHandle = (status, other) => {
 // 创建axios 实例
 
 const service = axios.create({
-  baseURL: "http://www.leeeyou.com/jerry_server/",
+  // baseURL: "http://www.leeeyou.com/jerry_server/",
+  baseURL: "http://42.192.234.88:9500/jerry_server/",
   timeout: 10000,
   withCredentials: true
 });

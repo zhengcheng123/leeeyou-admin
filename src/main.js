@@ -17,17 +17,17 @@ import https from "./assets/api/axios";
 Vue.use(ElementUI);
 Vue.config.productionTip = false;
 if (process.env.NODE_ENV == "development") {
-  console.log(window.g.SERVICE_CONTEXT_PATH);
   global.globalConfig = {
-    server1: "http://www.leeeyou.com/jerry_server/",
-    // server1: "http://42.192.234.88:9500/jerry_server/",
+    // server1: "http://www.leeeyou.com/jerry_server/",
+    server1: "http://42.192.234.88:9500/jerry_server/",
     header: {
       "Content-Type": "application/json"
     }
   };
 } else if (process.env.NODE_ENV == "production") {
   global.globalConfig = {
-    server1: window.g.SERVICE_CONTEXT_PATH,
+    // server1: "http://www.leeeyou.com/jerry_server/",
+    server1: "http://42.192.234.88:9500/jerry_server/",
     header: {
       "Content-Type": "application/json"
     }
@@ -44,9 +44,9 @@ Vue.prototype.$http = jquery;
 Vue.prototype.$axios = axios;
 Vue.prototype.$https = https;
 
-// const DEVSERVER = "http://42.192.234.88:9500/jerry_server/";
-const DEVSERVER = "http://www.leeeyou.com/jerry_server/";
-const PRODSERVER = "http://www.leeeyou.com/jerry_server/";
+const DEVSERVER = "http://42.192.234.88:9500/jerry_server/";
+// const DEVSERVER = "http://www.leeeyou.com/jerry_server/";
+const PRODSERVER = "http://42.192.234.88:9500/jerry_server/";
 
 const FileDownlaod = "http://218.93.24.35/";
 const FileUpload = "http://218.93.24.35/";
@@ -94,7 +94,7 @@ jquery.ajaxSetup({
   crossDomain: true,
   xhrFields: { withCredentials: true },
   error: function(xhr, status, error) {
-    console.log("xhr", xhr);
+    
     if (xhr.status === 403) {
       let hasLogout = sessionStorage.getItem("logout");
       if (hasLogout) {

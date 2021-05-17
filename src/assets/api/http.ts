@@ -44,9 +44,7 @@ const showStatus = (status: number) => {
 };
 
 const service = axios.create({
-  // 联调
-  // baseURL: process.env.NODE_ENV === "production" ? `/` : "http://www.leeeyou.com/jerry_server/",
-  baseURL: "http://www.leeeyou.com/jerry_server/",
+  baseURL: "http://42.192.234.88:9500/jerry_server/",
   headers: {
     get: {
       "Content-Type": "application/x-www-form-urlencoded;charset=utf-8"

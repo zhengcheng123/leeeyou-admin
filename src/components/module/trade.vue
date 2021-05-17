@@ -197,6 +197,7 @@
 import { renderTime, pennyToDollar, renderStateLabel } from '../../assets/utils'
 
 export default {
+  name: 'trade',
   data() {
     return {
       ticeId: '',

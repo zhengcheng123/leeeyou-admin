@@ -52,53 +52,91 @@
       <el-table :data="tableData"
                 height="0"
                 :header-cell-style="{background:'var(--background1)'}">
-        <el-table-column width="80"
-                         prop="typeName"
+        <el-table-column width="180"
+                         prop="code"
                          label="编号"></el-table-column>
         <el-table-column min-width="150"
                          prop="name"
                          label="优惠券名称"></el-table-column>
-        <el-table-column width="120"
-                         prop="canSellSize"
-                         label="优惠券类型"></el-table-column>
-        <el-table-column width="120"
-                         prop="sellSize"
-                         label="可使用商品"></el-table-column>
-        <el-table-column width="100"
-                         prop="description"
-                         label="使用门槛"></el-table-column>
-        <el-table-column width="120"
-                         prop=""
+        <el-table-column width="90"
+                         label="优惠券类型">
+          <template slot-scope="props">
+            {{categoryObj[props.row.category]}}
+          </template>
+        </el-table-column>
+        <el-table-column width="90"
+                         label="可使用商品">
+          <template slot-scope="props">
+            {{useTypeObj[props.row.useType]}}
+          </template>
+        </el-table-column>
+        <el-table-column width="80"
+                         label="使用门槛">
+          <template slot-scope="props">
+            {{props.row.discountBase ? `满${props.row.discountBase}元使用` : '不限制'}}
+          </template>
+        </el-table-column>
+        <el-table-column width="80"
+                         prop="discountQuota"
                          label="面额">
-          <!-- <template slot-scope="props">
-          </template> -->
+          <template slot-scope="props">
+            {{props.row.discountQuota}}元
+          </template>
+        </el-table-column>
+        <el-table-column width="170"
+                         label="发放时间">
+          <template slot-scope="props">
+            {{props.row.distributeStart}} 至 {{props.row.distributeEnd}}
+          </template>
+        </el-table-column>
+        <el-table-column width="170"
+                         label="券有效期">
+          <template slot-scope="props">
+            <div v-if="props.row.expirePeriod == '1'">
+              领券后{{props.row.expireGap}}天内
+            </div>
+            <div v-if="props.row.expirePeriod == '2'">
+              {{props.row.expireStart}} 至 {{props.row.expireEnd}}
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column width="70"
+                         prop="expired"
+                         label="状态">
+          <template slot-scope="props">
+            {{props.row.expired ? '使用中' : '已过期'}}
+          </template>
+        </el-table-column>
+        <el-table-column width="100"
+                         prop="distributeCount"
+                         label="已发放数量"></el-table-column>
+        <el-table-column width="100"
+                         prop="useCount"
+                         label="已使用数量"></el-table-column>
+        <el-table-column width="100"
+                         prop="expireCount"
+                         label="剩余数量">
+          <template slot-scope="props">
+            {{props.row.count - props.row.distributeCount }}
+          </template>
         </el-table-column>
         <el-table-column width="150"
                          prop="description"
-                         label="发放时间"></el-table-column>
-        <el-table-column width="120"
-                         prop="description"
-                         label="券有效期"></el-table-column>
-        <el-table-column width="100"
-                         prop="description"
-                         label="状态"></el-table-column>
-        <el-table-column width="100"
-                         prop="description"
-                         label="已发放数量"></el-table-column>
-        <el-table-column width="100"
-                         prop="description"
-                         label="已使用数量"></el-table-column>
-        <el-table-column width="100"
-                         prop="description"
-                         label="剩余数量"></el-table-column>
-        <el-table-column width="100"
-                         prop="description"
-                         label="启用"></el-table-column>
+                         label="启用">
+          <template slot-scope="props">
+            <el-switch v-model="props.row.available"
+                       @change="handleSwitch"
+                       active-text="启用"
+                       inactive-text="停用">
+            </el-switch>
+          </template>
+        </el-table-column>
         <el-table-column width="100"
                          label="操作">
           <template slot-scope="props">
             <el-button type="text">详情</el-button>
-            <el-button type="text">编辑</el-button>
+            <el-button type="text"
+                       @click="$router.push(`/coupon/edit/${props.row.id}`)">编辑</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -154,6 +192,18 @@ export default {
           name: '已发完',
         },
       ],
+
+      categoryObj: {
+        1: '购物赠券',
+        2: '全场赠券',
+        3: '新人赠券',
+      },
+      useTypeObj: {
+        1: '全场通用',
+        2: '指定分类',
+        3: '指定商品',
+      },
+
       conditionForm: {
         condition: {
           name: '',
@@ -220,16 +270,8 @@ export default {
       this.conditionForm.page.pageNum = no
       this.getTableData()
     },
-    switch(event, uid) {
-      this.$axios
-        .post(`${globalConfig.server1}api/goods/updateStat`, {
-          id: uid.id,
-          sellStat: event,
-        })
-        .then((res) => {
-          this.$message[res.data.result === 1 ? 'success' : 'error'](res.data.msg)
-        })
-      this.getTableData()
+    handleSwitch(id) {
+      this.$https.get(`/couponTemplate/updateAvailable/${}/${}`)
     },
   },
 }

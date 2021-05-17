@@ -2,6 +2,8 @@
   <div class="wrapper">
     <div class="form-board">
       <el-form ref="form"
+               v-loading="loadingVisible"
+               element-loading-text="数据加载中"
                :model="form"
                :rules="rules"
                label-width="160px">
@@ -49,7 +51,8 @@
           <el-input placeholder="请输入"
                     size="mini"
                     clearable
-                    v-model.number="form.availableQuantity">
+                    v-model.number="form.availableQuantity"
+                    v-if="form.category !== '3'">
             <el-select v-model="collectionRules"
                        slot="prepend"
                        size="mini"
@@ -61,9 +64,11 @@
             </el-select>
             <span slot="suffix">张</span>
           </el-input>
+          <el-radio v-if="form.category === '3'">每人限领 1 张</el-radio>
         </el-form-item>
-        <el-form-item label="发放时间">
-          <el-date-picker v-model="dateRange"
+        <el-form-item label="发放时间"
+                      prop="dateRange">
+          <el-date-picker v-model="form.dateRange"
                           value-format="yyyy-MM-dd HH:mm:ss"
                           :default-time="['00:00:00', '23:59:59']"
                           style="width: 100%"
@@ -74,7 +79,6 @@
                           end-placeholder="结束日期">
           </el-date-picker>
         </el-form-item>
-
         <el-form-item label="发放方式"
                       v-if="form.category === '1'">
           <el-radio-group v-model="form.distributeType">
@@ -88,10 +92,10 @@
                      style="width: 100%"
                      size="mini"
                      placeholder="请选择指定商品"
-                     value-key="id">
+                     value-key="goodsId">
             <el-option v-for="item in allGoodsOptions"
-                       :key="item.id"
-                       :label="item.name"
+                       :key="item.goodsId"
+                       :label="item.goodsName"
                        :value="item">
             </el-option>
           </el-select>
@@ -101,7 +105,6 @@
                     placeholder="请输入有效金额"
                     v-model.trim="form.distributeBase"><span slot="suffix">元</span></el-input>
         </el-form-item>
-
         <el-form-item label="使用门槛（满减）">
           <el-input size="mini"
                     clearable
@@ -132,15 +135,14 @@
                           end-placeholder="结束日期">
           </el-date-picker>
         </el-form-item>
-
         <el-form-item label="是否可与其他优惠同享">
           <el-radio-group v-model="isHybrid">
             <el-radio label="1">不可同时使用</el-radio>
           </el-radio-group>
         </el-form-item>
-
         <el-form-item label="可使用商品">
-          <el-radio-group v-model="form.useType">
+          <el-radio-group v-model="form.useType"
+                          @change="handleUseTypeChange">
             <el-radio label="1">全场通用</el-radio>
             <el-radio label="2">指定分类</el-radio>
             <el-radio label="3">指定商品</el-radio>
@@ -166,24 +168,24 @@
                      size="mini"
                      placeholder="请选择商品">
             <el-option v-for="item in allGoodsOptions"
-                       :key="item.id"
-                       :label="item.name"
-                       :value="item.id">
+                       :key="item.goodsId"
+                       :label="item.goodsName"
+                       :value="item.goodsId">
             </el-option>
           </el-select>
         </el-form-item>
-
         <el-form-item label="备注"
                       class="textAreaItem">
           <el-input size="mini"
                     type="textarea"
-                    v-model="form.desc"></el-input>
+                    v-model="form.intro"></el-input>
         </el-form-item>
         <el-form-item>
           <el-button type="primary"
                      size="mini"
-                     @click="onSubmit">立即创建</el-button>
-          <el-button size="mini">取消</el-button>
+                     @click="onSubmit">{{form.id ? '提交更新' : '提交新增'}}</el-button>
+          <el-button size="mini"
+                     @click="$router.go(-1)">取消</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -196,15 +198,16 @@ import { checkMoney, checkNumber } from '../../../assets/validate.js'
 export default {
   data() {
     return {
+      loadingVisible: true,
       form: {
         category: '1',
         name: '',
         count: 0,
         discountQuota: undefined, // 优惠券面额
-
         availableQuantity: '', // 限领张数
         distributeUserLimite: '', //每人限领张数
         distributeDayLimite: '', //每人每日限领张数
+        dateRange: [],
 
         distributeType: '1', // 发放规则： 商品 、满金额
         distributeGoods: [],
@@ -212,12 +215,10 @@ export default {
         discountBase: 0,
         expirePeriod: '1',
         expireGap: undefined,
-
         useType: '1',
         useGoods: [],
       },
       collectionRules: '1',
-      dateRange: [],
       expireDateRange: [],
       isHybrid: '1',
 
@@ -227,63 +228,89 @@ export default {
       rules: {
         category: [{ required: true, trigger: 'change' }],
         name: [
-          { required: true, message: '请输入名称', trigger: 'blur' },
+          { required: true, message: '名称不能为空', trigger: 'blur' },
           { min: 1, max: 15, message: '长度在 1 到 15 个字符', trigger: 'blur' },
         ],
-        discountQuota: [{ validator: checkMoney, trigger: 'blur' }],
-        availableQuantity: [{ validator: checkNumber, trigger: 'blur' }],
+        count: [{ required: true, message: '数量不能为空', trigger: 'blur' }],
+        discountQuota: [{ required: true, validator: checkMoney, trigger: 'blur' }],
+        availableQuantity: [{ required: true, validator: checkNumber, trigger: 'blur' }],
+        dateRange: [{ required: true, message: '时间不能为空', trigger: 'change' }],
       },
     }
   },
   mounted() {
-    this.getGoodsOptions()
-    this.getGoodsTypeOptions()
+    this.loadingVisible = true
+    Promise.all([this.getGoodsOptions(), this.getGoodsTypeOptions()]).then((res) => {
+      const id = this.$route.params.id
+      if (id) {
+        this.getDetails(id).then(() => (this.loadingVisible = false))
+      } else {
+        this.loadingVisible = false
+      }
+    })
   },
   methods: {
+    handleUseTypeChange(d) {
+      this.form.useGoods = []
+    },
     onSubmit() {
-      if (this.collectionRules === '1') {
-        this.form.distributeUserLimite = this.form.availableQuantity
-        this.form.distributeDayLimite = 0
-      } else {
-        this.form.distributeUserLimite = 0
-        this.form.distributeDayLimite = this.form.availableQuantity
-      }
-      if (this.dateRange && this.dateRange.length > 0) {
-        this.form.distributeStart = this.dateRange[0]
-        this.form.distributeEnd = this.dateRange[1]
-      } else {
-        this.form.distributeStart = ''
-        this.form.distributeEnd = ''
-      }
-      if (this.form.distributeType === '1') {
-        this.form.distributeBase = ''
-      } else {
-        this.form.distributeGoods = []
-      }
-      if (this.form.expirePeriod === '1') {
-        this.form.expireStart = ''
-        this.form.expireEnd = ''
-      } else {
-        this.form.this.form.expireStart = this.expireDateRange[0]
-        this.form.expireEnd = this.expireDateRange[1]
-      }
+      this.$refs['form'].validate((valid) => {
+        if (valid) {
+          alert('submit!')
+          return console.log(this.form)
+          if (this.collectionRules === '1') {
+            this.form.distributeUserLimite = this.form.availableQuantity
+            this.form.distributeDayLimite = 0
+          } else {
+            this.form.distributeUserLimite = 0
+            this.form.distributeDayLimite = this.form.availableQuantity
+          }
+          if (this.form.dateRange && this.form.dateRange.length > 0) {
+            this.form.distributeStart = this.form.dateRange[0]
+            this.form.distributeEnd = this.form.dateRange[1]
+          } else {
+            this.form.distributeStart = ''
+            this.form.distributeEnd = ''
+          }
+          if (this.form.distributeType === '1') {
+            this.form.distributeBase = ''
+          } else {
+            this.form.distributeGoods = []
+          }
+          if (this.form.expirePeriod === '1') {
+            this.form.expireStart = ''
+            this.form.expireEnd = ''
+          } else {
+            this.form.expireGap = undefined
+            this.form.expireStart = this.expireDateRange[0]
+            this.form.expireEnd = this.expireDateRange[1]
+          }
 
-      const p = JSON.parse(JSON.stringify(this.form))
-      p.distributeGoods = p.distributeGoods.map((ele) => {
-        return {
-          goodsCommonId: ele.id,
-          goodsId: ele.id,
-          goodsName: ele.name,
-          goodsState: ele.sellStat,
-          id: ele.id,
-          templateId: ele.typeId,
+          const p = JSON.parse(JSON.stringify(this.form))
+          p.useGoods = p.useGoods.map((ele) => {
+            return {
+              [this.form.useType === '3' ? 'goodsCommonId' : 'goodsType']: ele,
+            }
+          })
+          if (this.form.category === '3') p.availableQuantity = 1
+          console.log('submit', p)
+          const url = this.form.id ? '/couponTemplate/update' : '/couponTemplate/save'
+          this.$https.post(url, p).then((res) => {
+            if (res.result) {
+              this.$message.success(res.msg)
+              this.$router.go(-1)
+            } else {
+              this.$message.error(res.message)
+            }
+          })
+        } else {
+          console.log('error submit!!')
+          return false
         }
       })
-
-      console.log('submit', p)
     },
     getGoodsOptions() {
-      this.$https
+      return this.$https
         .post('/api/goods/list', {
           condition: {
             state: 1,
@@ -297,13 +324,75 @@ export default {
           },
         })
         .then((res) => {
-          this.allGoodsOptions = res.result ? res.list : []
-          console.log('this.allGoodsOptions: ', this.allGoodsOptions)
+          this.allGoodsOptions = res.result
+            ? res.list.map((ele) => {
+                return {
+                  goodsCommonId: ele.id,
+                  goodsId: ele.id,
+                  goodsName: ele.name,
+                  goodsState: ele.sellStat,
+                  templateId: ele.typeId,
+                }
+              })
+            : []
         })
     },
     getGoodsTypeOptions() {
-      this.$https.get('api/store/getLogisticsCompany').then((res) => {
+      return this.$https.get('api/store/getLogisticsCompany').then((res) => {
         this.typeOptions = res.result ? res.object.goodsType : []
+        if (!res.result) return res.msg && this.$message.error(res.msg)
+      })
+    },
+    getDetails(id) {
+      return this.$https.get(`/couponTemplate/get/${id}`).then((res) => {
+        if (res.result) {
+          const obj = res.object
+          let modifyForm = {
+            id: obj.id,
+            category: obj.category + '',
+            name: obj.name,
+            count: obj.count,
+            discountQuota: obj.discountQuota,
+            distributeType: obj.distributeType + '',
+
+            discountBase: obj.discountBase,
+            expirePeriod: obj.expirePeriod + '',
+            expireGap: obj.expirePeriod == 1 ? obj.expireGap : '',
+            useType: obj.useType + '',
+            intro: obj.intro,
+          }
+
+          if (!obj.distributeDayLimite && obj.distributeUserLimite) {
+            this.collectionRules = '1'
+            modifyForm.availableQuantity = obj.distributeUserLimite
+          } else if (obj.distributeDayLimite && !obj.distributeUserLimite) {
+            this.collectionRules = '2'
+            modifyForm.availableQuantity = obj.distributeDayLimite
+          }
+
+          modifyForm.dateRange = [obj.distributeStart, obj.distributeEnd]
+
+          if (obj.distributeType == 1) {
+            modifyForm.distributeGoods = obj.distributeGoods
+            modifyForm.distributeBase = ''
+          } else if (obj.distributeType == 2) {
+            modifyForm.distributeGoods = []
+            modifyForm.distributeBase = obj.distributeBase
+          }
+
+          if (obj.expirePeriod == 2) {
+            this.expireDateRange = [obj.expireStart, obj.expireEnd]
+          }
+
+          if (obj.useType == 2) {
+            modifyForm.useGoods = obj.useGoods.map((ele) => ele.goodsType)
+          } else if (obj.useType == 3) {
+            modifyForm.useGoods = obj.useGoods.map((ele) => ele.goodsCommonId)
+          }
+
+          this.form = JSON.parse(JSON.stringify(modifyForm))
+          console.log(this.form)
+        }
       })
     },
   },
