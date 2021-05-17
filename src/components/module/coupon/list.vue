@@ -125,7 +125,7 @@
                          label="启用">
           <template slot-scope="props">
             <el-switch v-model="props.row.available"
-                       @change="handleSwitch"
+                       @change="d => handleSwitch(d, props.row.id)"
                        active-text="启用"
                        inactive-text="停用">
             </el-switch>
@@ -134,7 +134,7 @@
         <el-table-column width="100"
                          label="操作">
           <template slot-scope="props">
-            <el-button type="text">详情</el-button>
+            <!-- <el-button type="text">详情</el-button> -->
             <el-button type="text"
                        @click="$router.push(`/coupon/edit/${props.row.id}`)">编辑</el-button>
           </template>
@@ -270,8 +270,14 @@ export default {
       this.conditionForm.page.pageNum = no
       this.getTableData()
     },
-    handleSwitch(id) {
-      this.$https.get(`/couponTemplate/updateAvailable/${}/${}`)
+    handleSwitch(available, id) {
+      this.$https.get(`/couponTemplate/updateAvailable/${id}/${available}`).then((res) => {
+        if (res.result) {
+          this.$message.success('操作成功')
+        } else {
+          this.getTableData()
+        }
+      })
     },
   },
 }
