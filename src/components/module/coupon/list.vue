@@ -70,13 +70,13 @@
             {{useTypeObj[props.row.useType]}}
           </template>
         </el-table-column>
-        <el-table-column width="80"
+        <el-table-column width="120"
                          label="使用门槛">
           <template slot-scope="props">
             {{props.row.discountBase ? `满${props.row.discountBase}元使用` : '不限制'}}
           </template>
         </el-table-column>
-        <el-table-column width="80"
+        <el-table-column width="70"
                          prop="discountQuota"
                          label="面额">
           <template slot-scope="props">
@@ -104,25 +104,27 @@
                          prop="expired"
                          label="状态">
           <template slot-scope="props">
-            {{props.row.expired ? '使用中' : '已过期'}}
+            <span v-if="props.row.expired">已过期</span>
+            <span v-else
+                  style="color: var(--green)">使用中</span>
           </template>
         </el-table-column>
-        <el-table-column width="100"
+        <el-table-column width="90"
                          prop="distributeCount"
                          label="已发放数量"></el-table-column>
-        <el-table-column width="100"
+        <el-table-column width="90"
                          prop="useCount"
                          label="已使用数量"></el-table-column>
-        <el-table-column width="100"
+        <el-table-column width="80"
                          prop="expireCount"
                          label="剩余数量">
           <template slot-scope="props">
             {{props.row.count - props.row.distributeCount }}
           </template>
         </el-table-column>
-        <el-table-column width="150"
+        <el-table-column width="140"
                          prop="description"
-                         label="启用">
+                         label="启停">
           <template slot-scope="props">
             <el-switch v-model="props.row.available"
                        @change="d => handleSwitch(d, props.row.id)"
@@ -131,7 +133,7 @@
             </el-switch>
           </template>
         </el-table-column>
-        <el-table-column width="100"
+        <el-table-column width="60"
                          label="操作">
           <template slot-scope="props">
             <!-- <el-button type="text">详情</el-button> -->
@@ -246,7 +248,15 @@ export default {
             this.$message({ message: '没有找到匹配项', type: 'info' })
             return false
           }
-          this.tableData = res.data.list
+          this.tableData = res.data.list.map((ele) => {
+            return {
+              ...ele,
+              discountBase: ele.discountBase / 100,
+              discountQuota: ele.discountQuota / 100,
+              distributeBase: ele.distributeBase / 100,
+            }
+          })
+
           this.conditionForm.page.pageNum = res.data.page.pageNum
           this.conditionForm.page.total = res.data.page.total
           this.conditionForm.page.pageSize = res.data.page.pageSize

@@ -139,7 +139,7 @@ export default new Router({
         },
         {
           path: "/coupon/edit/:id",
-          name: "新增优惠券",
+          name: "编辑优惠券",
           component: resolve => import("@/components/module/coupon/add")
         }
       ]

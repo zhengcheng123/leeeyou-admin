@@ -53,7 +53,7 @@
                     clearable
                     v-model.number="form.availableQuantity"
                     v-if="form.category !== '3'">
-            <el-select v-model="collectionRules"
+            <el-select v-model="form.collectionRules"
                        slot="prepend"
                        size="mini"
                        placeholder="请选择">
@@ -83,7 +83,7 @@
                       v-if="form.category === '1'">
           <el-radio-group v-model="form.distributeType">
             <el-radio label="1">指定商品消费</el-radio>
-            <el-radio label="2">消费满金额消费</el-radio>
+            <el-radio label="2">消费满金额</el-radio>
           </el-radio-group>
           <el-select v-model="form.distributeGoods"
                      v-if="form.distributeType === '1'"
@@ -121,7 +121,7 @@
           <el-input v-if="form.expirePeriod === '1'"
                     size="mini"
                     clearable
-                    placeholder="请输入有效天数"
+                    placeholder="请输入领券后可使用的天数"
                     v-model.number="form.expireGap"><span slot="suffix">天</span></el-input>
           <el-date-picker v-model="expireDateRange"
                           v-if="form.expirePeriod === '2'"
@@ -205,6 +205,7 @@ export default {
         count: 0,
         discountQuota: undefined, // 优惠券面额
         availableQuantity: '', // 限领张数
+        collectionRules: '1', // 限领规则
         distributeUserLimite: '', //每人限领张数
         distributeDayLimite: '', //每人每日限领张数
         dateRange: [],
@@ -218,7 +219,6 @@ export default {
         useType: '1',
         useGoods: [],
       },
-      collectionRules: '1',
       expireDateRange: [],
       isHybrid: '1',
 
@@ -258,13 +258,15 @@ export default {
         if (valid) {
           // alert('submit!')
           // return console.log(this.form)
-          if (this.collectionRules === '1') {
+
+          if (this.form.collectionRules === '1') {
             this.form.distributeUserLimite = this.form.availableQuantity
             this.form.distributeDayLimite = 0
-          } else {
+          } else if (this.form.collectionRules === '2') {
             this.form.distributeUserLimite = 0
             this.form.distributeDayLimite = this.form.availableQuantity
           }
+
           if (this.form.dateRange && this.form.dateRange.length > 0) {
             this.form.distributeStart = this.form.dateRange[0]
             this.form.distributeEnd = this.form.dateRange[1]
@@ -272,11 +274,13 @@ export default {
             this.form.distributeStart = ''
             this.form.distributeEnd = ''
           }
+          // 发放方式
           if (this.form.distributeType === '1') {
             this.form.distributeBase = ''
           } else {
             this.form.distributeGoods = []
           }
+
           if (this.form.expirePeriod === '1') {
             this.form.expireStart = ''
             this.form.expireEnd = ''
@@ -287,13 +291,44 @@ export default {
           }
 
           const p = JSON.parse(JSON.stringify(this.form))
-          p.useGoods = p.useGoods.map((ele) => {
-            return {
-              [this.form.useType === '3' ? 'goodsCommonId' : 'goodsType']: ele,
-            }
-          })
-          if (this.form.category === '3') p.availableQuantity = 1
-          console.log('submit', p)
+
+          console.log('p: ', p)
+
+          if (this.form.useType !== '1') {
+            if (!p.useGoods.length) return this.$message.warning(`请选择${this.form.useType === '3' ? '商品' : '分类'}`)
+            p.useGoods = p.useGoods.map((ele) => {
+              return {
+                [this.form.useType === '3' ? 'goodsCommonId' : 'goodsType']: ele,
+              }
+            })
+          } else {
+            p.useGoods = undefined
+          }
+
+          if (this.form.category === '3') {
+            p.availableQuantity = 1
+            p.distributeUserLimite = 1
+            p.distributeDayLimite = undefined
+            p.collectionRules = undefined
+
+            p.distributeType = undefined
+            p.distributeBase = undefined
+          } else if (this.form.category === '2') {
+            p.distributeType = undefined
+            p.distributeBase = undefined
+          } else if (this.form.category === '1') {
+            
+          }
+
+          p.discountBase = this.form.discountBase * 100
+          p.discountQuota = this.form.discountQuota * 100
+          p.distributeBase = this.form.distributeBase ? this.form.distributeBase * 100 : this.form.distributeBase
+
+          p.discountBase = this.form.discountBase * 100
+          p.discountBase = this.form.discountBase * 100
+          p.discountBase = this.form.discountBase * 100
+
+          // return console.log('submit', p)
           const url = this.form.id ? '/couponTemplate/update' : '/couponTemplate/save'
           this.$https.post(url, p).then((res) => {
             if (res.result) {
@@ -352,10 +387,10 @@ export default {
             category: obj.category + '',
             name: obj.name,
             count: obj.count,
-            discountQuota: obj.discountQuota,
+            discountQuota: obj.discountQuota / 100,
             distributeType: obj.distributeType + '',
 
-            discountBase: obj.discountBase,
+            discountBase: obj.discountBase / 100,
             expirePeriod: obj.expirePeriod + '',
             expireGap: obj.expirePeriod == 1 ? obj.expireGap : '',
             useType: obj.useType + '',
@@ -363,10 +398,10 @@ export default {
           }
 
           if (!obj.distributeDayLimite && obj.distributeUserLimite) {
-            this.collectionRules = '1'
+            modifyForm.collectionRules = '1'
             modifyForm.availableQuantity = obj.distributeUserLimite
           } else if (obj.distributeDayLimite && !obj.distributeUserLimite) {
-            this.collectionRules = '2'
+            modifyForm.collectionRules = '2'
             modifyForm.availableQuantity = obj.distributeDayLimite
           }
 
@@ -377,7 +412,7 @@ export default {
             modifyForm.distributeBase = ''
           } else if (obj.distributeType == 2) {
             modifyForm.distributeGoods = []
-            modifyForm.distributeBase = obj.distributeBase
+            modifyForm.distributeBase = obj.distributeBase / 100
           }
 
           if (obj.expirePeriod == 2) {

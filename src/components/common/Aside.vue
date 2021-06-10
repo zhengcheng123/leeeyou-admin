@@ -79,6 +79,10 @@ export default {
     &:hover {
       color: var(--white);
       background-color: var(--primary-light);
+
+      i {
+        color: var(--white);
+      }
     }
 
     &.is-active {
