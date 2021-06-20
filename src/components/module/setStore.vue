@@ -234,7 +234,7 @@
               <el-table-column label="操作"
                                min-width="190"
                                align="center">
-                <template scope="props">
+                <template slot-scope="props">
                   <div class="btn-group">
                     <el-button class="age-btn"
                                @click="editUserInfo(props.row,props.$index)"

@@ -22,7 +22,7 @@
         <el-table-column prop="last_login_time" label="最后一次登录时间" sortable>
         </el-table-column>
         <el-table-column label="操作" min-width="210">
-          <template scope="props">
+          <template slot-scope="props">
             <div class="btn-group">
               <el-button type="text" @click="editItem(props.row)">编辑</el-button>
               <el-button type="text" @click="confirmDelete(props.row.id)">删除</el-button>

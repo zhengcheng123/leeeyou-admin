@@ -119,7 +119,11 @@
                          prop="expireCount"
                          label="剩余数量">
           <template slot-scope="props">
-            {{props.row.count - props.row.distributeCount }}
+            <!-- {{props.row.count - props.row.distributeCount }} -->
+            <span v-if="props.row.count - props.row.distributeCount == 0"
+                  style="color: var(--red); font-weight: 600;">0</span>
+            <span v-else>{{props.row.count - props.row.distributeCount }}</span>
+
           </template>
         </el-table-column>
         <el-table-column width="140"
