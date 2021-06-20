@@ -97,7 +97,7 @@
                              min-width="110"
                              label="实际退款金额"
                              align="center">
-              <template scope="props">
+              <template slot-scope="props">
                 <span>{{pennyToDollar(props.row.backMoney)}}</span>
               </template>
             </el-table-column>
@@ -125,7 +125,7 @@
             <el-table-column label="凭证图片"
                              min-width="260"
                              align="center">
-              <template scope="props">
+              <template slot-scope="props">
                 <div style="display: flex; flex-flow: row wrap;">
                   <img v-for="i in 5"
                        :key="i"
@@ -153,12 +153,12 @@
                              min-width="190"
                              label="交易创建时间"
                              align="center">
-              <template scope="props">
+              <template slot-scope="props">
                 <span>{{renderTime(props.row.createTime)}}</span>
               </template>
             </el-table-column>
             <!-- <el-table-column prop="checkTime" label="确认时间" min-width="190" align="center">
-              <template scope="props">
+              <template slot-scope="props">
                 <span>{{renderTime(props.row.checkTime)}}</span>
               </template>
             </el-table-column> -->
@@ -166,7 +166,7 @@
                              label="退款完成时间"
                              min-width="190"
                              align="center">
-              <template scope="props">
+              <template slot-scope="props">
                 <span>{{renderTime(props.row.finishTime)}}</span>
               </template>
             </el-table-column>
@@ -177,7 +177,7 @@
             <el-table-column label="操作"
                              min-width="260"
                              align="center">
-              <template scope="props">
+              <template slot-scope="props">
                 <div class="btn-group">
                   <!-- <button class="see-btn" @click="detailRefund(props.row)">详情</button> -->
                   <el-button class="age-btn"
