@@ -2,15 +2,6 @@
   <div>
     <div id="goods-index"
          v-if="!addSwitch">
-      <div class="crumbs">
-        <el-breadcrumb separator="/">
-          <el-breadcrumb-item>
-            <i class="fa fa-shopping-bag"
-               aria-hidden="true"></i>
-            优惠券
-          </el-breadcrumb-item>
-        </el-breadcrumb>
-      </div>
       <div class="content">
         <div class="goods-row clearfix">
           <div class="row"></div>
@@ -46,7 +37,7 @@
                            class="f-left"
                            @click="getdataTable()">搜索</el-button>
                 <el-button type="primary"
-                           size="small"
+                           size="mini"
                            @click="addNew()"
                            class="f-left">新增</el-button>
               </el-form-item>
@@ -179,7 +170,8 @@
               </template>
             </el-table-column>
           </el-table>
-          <el-pagination class="pagination"
+          <el-pagination background
+                         class="pagination"
                          @size-change="pageSizeChange"
                          :page-sizes="[15,30,50,100]"
                          :page-size="conditionForm.page.pageSize"

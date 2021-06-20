@@ -1,17 +1,9 @@
 <template>
   <div>
-    <div class="crumbs">
-      <el-breadcrumb separator="/">
-        <el-breadcrumb-item>
-          <i class="fa fa-users" aria-hidden="true"></i>
-          buyer
-        </el-breadcrumb-item>
-      </el-breadcrumb>
-    </div>
     <div class="content">
       <div class="row">
-        <el-button icon="plus" size="small" @click="addItem" class="f-left">新增</el-button>
-        <el-button icon="delete" size="small" plain type="danger" @click="confirmDelete()" class="f-left">删除</el-button>
+        <el-button icon="plus" size="mini" @click="addItem" class="f-left">新增</el-button>
+        <el-button icon="delete" size="mini" plain type="danger" @click="confirmDelete()" class="f-left">删除</el-button>
       </div>
       <el-table :data="currentItems" @selection-change="selectionChange" border style="width: 100%"
                 @sort-change="sortItems" :max-height="maxTableHeight"  :header-cell-style="{background:'#E8EAEE',height:'48px',}">
@@ -38,7 +30,7 @@
           </template>
         </el-table-column>
       </el-table>
-      <el-pagination class="pagination" @size-change="pageSizeChange" :page-sizes="[15,30,50,100]"
+      <el-pagination background class="pagination" @size-change="pageSizeChange" :page-sizes="[15,30,50,100]"
                      :page-size="conditionForm.page.pageSize" :current-page="conditionForm.page.pageNum"
                      @current-change="pageNoChange" layout="total, sizes,prev, pager, next, jumper"
                      :total="conditionForm.page.total">

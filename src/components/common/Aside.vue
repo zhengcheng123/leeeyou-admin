@@ -1,108 +1,118 @@
 <template>
   <div>
-   
-    <!-- <el-menu :default-active="onRoute" unique-opened @select="changeRoute">
-      <el-menu-item index="goods">
-        <i class="fa fa-shopping-bag" aria-hidden="true"></i>
-        商品管理
-      </el-menu-item>
-      <el-menu-item index="trade">
-        <i class="fa fa-bars" aria-hidden="true"></i>
-        交易管理
-      </el-menu-item>
-      <el-menu-item index="afterSell">
-        <i class="fa fa-user-circle-o" aria-hidden="true"></i>
-        售后管理
-      </el-menu-item>
-      <el-menu-item index="store">
-        <i class="fa fa-archive" aria-hidden="true"></i>
-        我的店铺
-      </el-menu-item>
-    </el-menu> -->
+    <el-menu :default-active="activeRouter"
+             background-color="#003459"
+             active-text-color="var(--primary)"
+             unique-opened
+             router>
+      <div v-for="items in navMenus"
+           :key="items.id">
+        <el-submenu v-if="items.children.length"
+                    :index="items.path">
+          <template slot="title"><i :class="items.icon || 'el-icon-menu'"></i>{{items.name}}</template>
+          <el-menu-item v-for="subItems in items.children"
+                        :key="subItems.id"
+                        :index="subItems.path">{{subItems.name}}</el-menu-item>
+        </el-submenu>
+        <el-menu-item v-if="!items.children.length"
+                      :index="items.path">
+          <i :class="items.icon || 'el-icon-menu'"></i>
+          <span slot="title">{{items.name}}</span>
+        </el-menu-item>
+      </div>
 
- <label v-for="(navMenu,index) in navMenus" :key="index">
-        <el-submenu v-if="navMenu.children&&navMenu.children.length>0" :index="navMenu.id">  
-            <template slot="title">  
-                <i style="width:15px;height:15px;" :class="navMenu.icon"></i>
-                <span slot="title" >{{navMenu.name}}</span>  
-            </template>  
-            <el-menu-item-group >
-                <Aside :navMenus="navMenu.children"></Aside>  
-            </el-menu-item-group>
-        </el-submenu> 
-        
-        <el-menu-item v-else :key="navMenu.id" :index="navMenu.id"  :route="navMenu.path" >  
-            <i style="width:15px;height:15px;"  :class="navMenu.icon"></i>
-            <span  slot="title">{{navMenu.name}}</span>  
-        </el-menu-item>  
-  
-       
-    </label>  
+    </el-menu>
 
   </div>
 </template>
+
 <script>
 export default {
+  name: 'Aside',
+  props: ['navMenus'],
   data() {
     return {
       accessUrl: '',
-      subMenuUrl: ''
+      subMenuUrl: '',
     }
   },
-  props: ['navMenus'],  
-  name: 'Aside',  
   computed: {
-    // onRoute: function() {
-    //   return this.$route.path.split('/')[1]
-    // },
-    // isSubRoot() {
-    //   return this.$route.path.split('/').length === 2
-    // },
-  },
-  methods: {
-    changeRoute(index) {
-      // if (index === this.onRoute && this.isSubRoot) {
-      //   window.location.reload()
-      // } else {
-      //   this.$router.push('/' + index)
-      // }
+    activeRouter() {
+      return this.$route.path
     },
-    chackFirst(){
-        console.log(111)
-      }
-  }
+  },
+  mounted() {
+    console.log(this.navMenus)
+  },
 }
 </script>
-<style scoped>
 
+<style lang="scss" scoped>
+/deep/ .el-menu {
+  color: #bfbfc0;
+  overflow-y: scroll !important;
+  border: none !important;
+  width: var(--nav-width);
 
-.aside-header {
-  width: 196px;
-  height: 23px;
-  font-size: 24px;
-  font-family: PingFang SC;
-  font-weight: bold;
-  color: rgba(255, 255, 255, 1);
-  line-height: 20px;
-  margin: 0 auto;
-  margin-top: 25px;
-}
-.aside-img {
-  background: url("../../assets/bg-logo.png");
-  background-size: 100% 100%;
-  width: 91px;
-  height: 51px;
-  margin: 0 auto;
-}
-.aside-add {
-  margin-top: 22px;
-}
-.aside-title {
-  width: 200px;
-  height: 10px;
-  background: url("../../assets/eg.png");
-  background-size: 100% 100%;
-  margin: 0 auto;
-  margin-top: 8px;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  .el-scrollbar {
+    height: 100%;
+  }
+
+  .el-scrollbar__wrap {
+    height: 100%;
+  }
+
+  .el-menu-item {
+    color: #bfbfc0;
+    height: 40px;
+    line-height: 40px;
+    margin-bottom: 10px;
+    font-size: 15px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+    &:hover {
+      color: var(--white);
+      background-color: var(--primary-light);
+
+      i {
+        color: var(--white);
+      }
+    }
+
+    &.is-active {
+      color: var(--white) !important;
+      background-color: var(--primary) !important;
+      background-color: var(--primary-light);
+      font-weight: 500;
+    }
+  }
+
+  .el-submenu__title {
+    color: #bfbfc0;
+    height: 40px;
+    line-height: 40px;
+    margin-bottom: 10px;
+    font-size: 15px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+    &:hover {
+      color: var(--white);
+    }
+  }
+
+  .el-menu--inline {
+    .el-menu-item {
+      font-size: 14px;
+      padding-left: 49px !important;
+    }
+  }
 }
 </style>

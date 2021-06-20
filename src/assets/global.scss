@@ -1,0 +1,398 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  outline: none;
+}
+
+[hidden] {
+  display: none;
+}
+
+.container {
+  margin-left: var(--nav-width);
+  margin-top: 50px;
+  background-color: var(--background);
+  height: calc(100vh - 50px);
+  display: flex;
+  flex-direction: column;
+
+  .wrapper {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    padding: 0 12px 12px;
+
+    .el-button--mini {
+      font-size: 14px;
+      padding: 6px 8px;
+    }
+
+    .el-button--default {
+      border: 1px solid var(--primary);
+      color: var(--primary);
+
+      &.is-disabled {
+        border: 1px solid #c9cbd4;
+        background-color: #c9cbd4;
+        color: var(--white);
+      }
+    }
+
+    .search_bar {
+      display: flex;
+      flex-flow: row;
+      background-color: var(--white);
+      padding: 10px 16px 6px;
+      margin: 0 -12px 12px;
+
+      .el-form.el-form--inline {
+        .el-form-item {
+          margin-bottom: 4px !important;
+
+          .el-form-item__label {
+            padding: 0 10px 0 0;
+          }
+        }
+      }
+
+      .right {
+        width: 160px;
+        min-width: 160px;
+        flex: 1;
+        height: 40px;
+        line-height: 40px;
+        text-align: right;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+
+        > div {
+          flex: 1;
+        }
+      }
+    }
+
+    section {
+      flex: 1;
+      background-color: var(--white);
+      border-radius: 10px;
+      padding: 12px 0;
+      display: flex;
+      flex-direction: column;
+
+      .operate_bar {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 16px;
+        margin-bottom: 12px;
+
+        > .left {
+          font-size: 14px;
+        }
+      }
+
+      .el-table {
+        flex: 1;
+        width: calc(100% - 32px);
+        margin: 0 auto;
+
+        .caret-wrapper {
+          height: 23px;
+
+          .sort-caret {
+            &.ascending {
+              top: 0;
+            }
+
+            &.descending {
+              bottom: 0;
+            }
+          }
+        }
+
+        th {
+          color: var(--title6);
+          padding: 10px 0;
+        }
+
+        .el-table__header-wrapper {
+          thead {
+            th {
+              color: var(--title6);
+              padding: 10px 0;
+            }
+          }
+        }
+
+        td {
+          padding: 6px 0;
+        }
+
+        .el-table__body-wrapper {
+          td {
+            padding: 6px 0;
+
+            .cell {
+              overflow: hidden;
+              text-overflow: ellipsis;
+              display: -webkit-box;
+              /*! autoprefixer: off */
+              -webkit-box-orient: vertical;
+              /* autoprefixer: on */
+              -webkit-line-clamp: 3;
+            }
+          }
+        }
+      }
+
+      .pagination {
+        text-align: right;
+        box-shadow: 0px -3px 0px 0px rgba(75, 76, 78, 0.03);
+        padding-top: 10px;
+        margin-top: 4px;
+      }
+    }
+  }
+}
+
+.fa {
+  color: var(--primary);
+}
+
+.f-right {
+  float: right;
+}
+
+.f-left {
+  float: left;
+}
+
+.lg-btn {
+  width: 100%;
+}
+
+.danger-text-btn:hover {
+  color: #fa5555;
+}
+
+.error-input .el-input__inner {
+  border-color: #fa5555;
+}
+
+/* 修改element 的一些默认样式*/
+
+.lg-select {
+  width: 100%;
+}
+
+.select-input {
+  width: 215px;
+}
+
+.el-date-editor .el-range-separator {
+  width: 30px;
+}
+
+/*disabled 的 tab pane 的标题不再悬浮高亮 但不影响active的*/
+
+.el-tabs__header .el-tabs__item.is-disabled:hover {
+  color: #878d99;
+}
+
+.el-tabs__header .el-tabs__item.is-active:hover {
+  color: #409eff;
+}
+
+/* custom style */
+
+/* icon 大小 */
+
+.icon-4x {
+  font-size: 40px !important;
+}
+
+.validator:before {
+  content: "*";
+  color: #ff4949;
+  margin-right: 4px;
+}
+
+.logistics-dialog {
+  width: 400px;
+}
+
+.sm-input {
+  width: 100px;
+}
+
+/* must be added in global.css but is particular */
+
+.goods-info .el-tabs__nav {
+  width: 100%;
+  display: flex;
+}
+
+.goods-info .el-tabs__item {
+  flex: 1;
+}
+
+.goods-dialog {
+  width: 400px;
+}
+
+.el-table .gutter {
+  background: #e8eaee;
+}
+
+.f-left {
+  width: 100px;
+  height: 36px;
+  background: #fff;
+  border-radius: 18px;
+}
+
+.edit-btn {
+  width: 66px;
+  height: 28px;
+  background: rgba(235, 134, 0, 1);
+  border: 1px solid rgba(235, 134, 0, 1);
+  border-radius: 6px;
+  line-height: 0px;
+  color: #fff;
+}
+
+.detail-btn {
+  width: 66px;
+  height: 28px;
+  background: rgba(159, 158, 34, 1);
+  border: 1px solid rgba(159, 158, 34, 1);
+  border-radius: 6px;
+  line-height: 0px;
+  color: #fff;
+  cursor: pointer;
+}
+
+.el-pager li.active {
+  color: var(--primary);
+}
+
+.el-select .el-input.is-focus .el-input__inner {
+  border-color: var(--primary);
+}
+
+.el-pagination__sizes .el-input .el-input__inner:hover {
+  border-color: var(--primary);
+}
+
+.el-select-dropdown__item.selected {
+  color: var(--primary);
+}
+
+.el-input.is-active .el-input__inner,
+.el-input__inner:focus {
+  border-color: var(--primary);
+}
+
+.adds-btn {
+  background-color: var(--primary);
+  color: #fff;
+  border-color: var(--primary);
+  border: none;
+}
+
+.el-button--primary {
+  background-color: var(--primary);
+  border-color: var(--primary);
+}
+
+.el-button--primary:hover,
+.el-button--primary:focus {
+  background-color: var(--primary);
+  border-color: var(--primary);
+  color: #fff;
+}
+
+.el-button--primary.is-disabled {
+  background-color: var(--primary);
+  border-color: var(--primary);
+  opacity: 0.5;
+}
+
+.el-button--primary.is-disabled:hover {
+  background-color: var(--primary);
+  border-color: var(--primary);
+  opacity: 0.5;
+}
+
+.el-button--info.is-disabled {
+  background-color: #9f9e22;
+  border-color: #9f9e22;
+  opacity: 0.5;
+}
+
+.el-button--info.is-disabled:hover {
+  background-color: #9f9e22;
+  border-color: #9f9e22;
+  opacity: 0.5;
+}
+
+.el-button--info {
+  background-color: #9f9e22;
+  border-color: #9f9e22;
+}
+
+.el-button--info:hover,
+.el-button--info:focus {
+  background-color: #9f9e22;
+  border-color: #9f9e22;
+  color: #fff;
+}
+
+.search-btnT {
+  margin-left: 10px;
+}
+
+.el-pagination.is-background .el-pager li:not(.disabled).active {
+  background-color: var(--primary);
+}
+
+.sell-btn {
+  background: none;
+  border: none;
+  width: 35px !important;
+  height: 0 !important;
+}
+
+.section {
+  padding: 15px;
+}
+
+.el-table--border::after {
+  background-color: #fff !important;
+}
+
+.goods-row {
+  width: 100%;
+  background-color: #fff;
+  padding: 12px;
+  border-radius: 3px;
+}
+
+.el-select__tags {
+  .el-tag {
+    max-width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+    .el-select__tags-text {
+      flex: 1;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+    }
+  }
+}

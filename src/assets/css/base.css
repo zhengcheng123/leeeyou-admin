@@ -94,13 +94,6 @@
     justify-content: flex-end;
 }
 
-.el-button {
-    width: 78px;
-    height: 36px;
-    font-size: 15px !important;
-    margin: 0 15px 20px 0 !important;
-}
-
 .el-button>div {
     flex: 1;
     display: flex;
@@ -108,11 +101,11 @@
     justify-content: flex-end;
 }
 
-.el-button {
+/* .el-button {
     font-size: 14px !important;
     margin: 0 15px 0 0 !important;
     margin-left: 10px;
-}
+} */
 
 .el-button:last-child {
     margin-right: 0;
@@ -120,8 +113,4 @@
 
 .el-table th {
     background-color: rgb(232, 234, 238);
-}
-
-.crumbs {
-    padding-bottom: 10px;
 }

@@ -1,15 +1,6 @@
 <template>
   <div>
     <div class="setStore_city">
-      <div class="crumbs">
-        <el-breadcrumb separator="/">
-          <el-breadcrumb-item>
-            <i class="fa fa-user-circle-o"
-               aria-hidden="true"></i>
-            运费设置
-          </el-breadcrumb-item>
-        </el-breadcrumb>
-      </div>
       <div class="content">
         <div class="form-section">
           <div class="section-head">
@@ -31,6 +22,7 @@
           <div class="section-body">
             <div class="section-set">
               <div v-for="company in logisticsCompanies"
+                   :key="company"
                    class="logistics-row">
                 <!-- <span v-if="company.type===1">发货地址</span> -->
                 <div v-if="company.type===1">
@@ -108,7 +100,7 @@
                      :model="logisticsCompanyForm"
                      class="demo-form-inline">
               <!-- <el-form-item label="类型选择" prop="type">
-                <el-select v-model="logisticsCompanyForm.type" size="small">
+                <el-select v-model="logisticsCompanyForm.type" size="mini">
                   <el-option
                     v-for="item in logisticsTypes"
                     :value="item.id"
@@ -120,32 +112,32 @@
               <el-form-item v-if="logisticsCompanyForm.type===1"
                             label="物流公司"
                             prop="name">
-                <el-input size="small"
+                <el-input size="mini"
                           v-model.trim="logisticsCompanyForm.name"></el-input>
               </el-form-item>
               <el-form-item v-if="logisticsCompanyForm.type===1"
                             label="出货地址"
                             prop="name">
-                <el-input size="small"
+                <el-input size="mini"
                           v-model.trim="logisticsCompanyForm.address"></el-input>
               </el-form-item>
               <el-form-item label="自提地址"
                             prop="address">
-                <el-input size="small"
+                <el-input size="mini"
                           v-model.trim="logisticsCompanyForm.address"></el-input>
               </el-form-item>
               <el-form-item label="联系人"
                             prop="contactsName">
-                <el-input size="small"
+                <el-input size="mini"
                           v-model.trim="logisticsCompanyForm.contactsName"></el-input>
               </el-form-item>
               <el-form-item label="联系方式"
                             prop="contactsMobile">
-                <el-input size="small"
+                <el-input size="mini"
                           v-model.trim="logisticsCompanyForm.contactsMobile"></el-input>
               </el-form-item>
               <el-form-item>
-                <el-button size="small"
+                <el-button size="mini"
                            type="primary"
                            @click="addLogisticsCompany">添加</el-button>
               </el-form-item>
@@ -629,13 +621,7 @@ export default {
       let list = {}
       let keys = Object.keys(row)
       if (!row.def) {
-        if (
-          row.firstWeight === '' ||
-          row.firstPrice === '' ||
-          row.secondWeight === '' ||
-          row.secondPrice === '' ||
-          row.addresses.length == 0
-        ) {
+        if (row.firstWeight === '' || row.firstPrice === '' || row.secondWeight === '' || row.secondPrice === '' || row.addresses.length == 0) {
           this.$message.error('必填项没有填写')
           return false
         }

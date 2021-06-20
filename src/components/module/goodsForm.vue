@@ -1,15 +1,5 @@
 <template>
   <div>
-    <div class="crumbs">
-      <el-breadcrumb separator="/">
-        <el-breadcrumb-item :to="{path:'/index'}">
-          <i class="fa fa-shopping-bag"
-             aria-hidden="true"></i>
-          商品管理
-        </el-breadcrumb-item>
-        <el-breadcrumb-item>发布商品</el-breadcrumb-item>
-      </el-breadcrumb>
-    </div>
     <div class="content">
       <el-form>
         <el-steps :space="200"
@@ -35,7 +25,7 @@
                         border>{{commonType.type_name}}</el-radio>
             </div>
             <el-button type="primary"
-                       size="small"
+                       size="mini"
                        class="next-btn"
                        :disabled="activeTab!=='type'"
                        @click="validateType">下一步</el-button>
@@ -49,7 +39,7 @@
                 <!-- <div class="item">
                   <div class="item-label">商品分组：</div>
                   <div class="item-body">
-                    <el-select v-model="goodsCommon.groupId" size="small" placeholder="请选择分组">
+                    <el-select v-model="goodsCommon.groupId" size="mini" placeholder="请选择分组">
                       <el-option v-for="item in groups" :key="item.id" :label="item.type_name" :value="item.id"></el-option>
                     </el-select>
                     <div class="btn-group">
@@ -70,7 +60,7 @@
                   <el-form-item label="详细类别："
                                 prop="typeId">
                     <el-select v-model="goodsCommon.typeId"
-                               size="small"
+                               size="mini"
                                placeholder="请选择类别">
                       <el-option v-for="(item,index) in subTypes"
                                  :key="index"
@@ -81,7 +71,7 @@
                   <el-form-item label="商品品牌："
                                 prop="grandId">
                     <el-select v-model="goodsCommon.grandId"
-                               size="small"
+                               size="mini"
                                placeholder="请选择品牌">
                       <el-option v-for="item in grands"
                                  :key="item.id"
@@ -94,7 +84,7 @@
                   </el-form-item>
                   <el-form-item label="商品名称："
                                 prop="name">
-                    <el-input size="small"
+                    <el-input size="mini"
                               class="select-input"
                               v-model.trim="goodsCommon.name"></el-input>
                   </el-form-item>
@@ -102,12 +92,12 @@
                                 prop="description">
                     <el-input placeholder="描述不可超过1000字"
                               class="select-input"
-                              size="small"
+                              size="mini"
                               v-model.trim="goodsCommon.description"
                               maxlength="1000"></el-input>
                   </el-form-item>
                   <!-- <el-form-item label="运费设置：" prop="transformFeeLabel">
-                    <el-input class="select-input" size="small" v-model.trim="goodsCommon.transformFeeLabel"></el-input>
+                    <el-input class="select-input" size="mini" v-model.trim="goodsCommon.transformFeeLabel"></el-input>
                   </el-form-item>-->
                 </el-form>
                 <div class="item">
@@ -153,7 +143,7 @@
                     <div class="formats">
                       <div class="select-attr">
                         <el-select v-model="tempAttr"
-                                   size="small"
+                                   size="mini"
                                    placeholder="规格"
                                    value-key="id">
                           <el-option v-for="goodAttr in goodAttrs"
@@ -162,7 +152,7 @@
                                      :value="goodAttr"></el-option>
                         </el-select>
                         <el-button @click="addPredictAttr"
-                                   size="small"
+                                   size="mini"
                                    style="margin-left:20px">添加</el-button>
                       </div>
                       <ul>
@@ -180,7 +170,7 @@
                                 class="attr"
                                 :key="innerIndex">
                               <el-input class="label-input"
-                                        size="small"
+                                        size="mini"
                                         v-model.trim="innerAttr.value"></el-input>
 
                             </li>
@@ -191,7 +181,7 @@
                           </ul>
                         </li>
                       </ul>
-                      <el-button size="small"
+                      <el-button size="mini"
                                  style="margin-top: 10px;"
                                  @click="generatePredictGoods">确认规格</el-button>
                     </div>
@@ -216,7 +206,7 @@
                                        max-width="150">
                         <template slot-scope="scope">
                           <el-input class="sm-input"
-                                    size="small"
+                                    size="mini"
                                     v-model.trim="scope.row.canSellSize"
                                     @input="numInput(scope.row)"></el-input>
                         </template>
@@ -228,7 +218,7 @@
                         <template slot-scope="scope">
                           <el-input @input="numInput2(scope.row)"
                                     class="sm-input"
-                                    size="small"
+                                    size="mini"
                                     v-model.trim="scope.row.size"></el-input>
                         </template>
                       </el-table-column>
@@ -238,7 +228,7 @@
                                        max-width="150">
                         <template slot-scope="scope">
                           <el-input class="sm-input"
-                                    size="small"
+                                    size="mini"
                                     @input="checknum(scope.row)"
                                     v-model.trim="scope.row.priceLabel"></el-input>
                         </template>
@@ -249,7 +239,7 @@
                                        max-width="150">
                         <template slot-scope="scope">
                           <el-input class="sm-input"
-                                    size="small"
+                                    size="mini"
                                     @input="checknum2(scope.row)"
                                     v-model.trim="scope.row.procurementPriceLabel"></el-input>
                         </template>
@@ -260,7 +250,7 @@
                                        max-width="150">
                         <template slot-scope="scope">
                           <el-input class="sm-input"
-                                    size="small"
+                                    size="mini"
                                     @input="checkWeight(scope.row)"
                                     v-model.trim="scope.row.weight"></el-input>
                         </template>
@@ -288,7 +278,7 @@
               </div>
             </div>
             <el-button @click="resetForms"
-                       size="small">返回</el-button>
+                       size="mini">返回</el-button>
             <el-button @click="validateBasic"
                        type="primary"
                        :loading="saving">提交</el-button>
